@@ -20,11 +20,11 @@ export default defineConfig({
         items: [
           {
             text: "Cris是谁?",
-            link: "/guide/cris-who",
+            link: "/profile/cris-who",
           },
           {
-            text: "Wiki免责声明",
-            link: "/guide/getting-started",
+            text: "免责声明",
+            link: "/profile/disclaimer",
           },
         ],
       },

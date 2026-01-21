@@ -12,11 +12,11 @@ hero:
   actions:
     - theme: brand
       text: "Cris是谁?🧑‍💻"
-      link: /guide/cris-who
+      link: /profile/cris-who
       rel: noopener noreferrer
     - theme: alt
       text: 快速开始🎉💯
-      link: /guide/getting-started
+      link: /profile/getting-started
       rel: noopener noreferrer
 
 features:
