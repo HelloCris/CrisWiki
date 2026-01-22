@@ -4,18 +4,18 @@ layout: home
 
 hero:
   name: "Cris Wiki"
-  text: "前端🐮🐴的私人笔记~~~"
+  text: "前端🐮🐴的学习旅程~~~"
   tagline: 记录前端技术、学习笔记与实践经验，持续成长的技术分享平台
   image:
-    src: /vitepress-logo-large.svg
+    src: /logo.png
     alt: Cris Wiki
   actions:
     - theme: brand
       text: "Cris是谁?🧑‍💻"
-      link: /profile/cris-who
+      link: /profile/who-is-cris
       rel: noopener noreferrer
     - theme: alt
-      text: 快速开始🎉💯
+      text: 快速开始💯
       link: /profile/getting-started
       rel: noopener noreferrer
 

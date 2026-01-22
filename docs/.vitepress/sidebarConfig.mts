@@ -5,7 +5,7 @@ export const sidebarConfig = [
     items: [
       {
         text: "Cris是谁?",
-        link: "/profile/cris-who",
+        link: "/profile/who-is-cris",
       },
       {
         text: "免责声明",

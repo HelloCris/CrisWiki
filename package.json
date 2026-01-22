@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Cris学习笔记Wikipedia",
   "type": "module",
+  "license": "MIT",
   "author": {
     "name": "Cris",
     "email": "wgxyyds97@163.com"

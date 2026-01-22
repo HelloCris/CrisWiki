@@ -5,8 +5,9 @@ import { sidebarConfig } from "./sidebarConfig.mts";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Cris Wiki",
-  description: "Cris Wiki -- 一个半路出家的前端开发的私人笔记",
+  description: "Cris Wiki -- 一个半路出家的前端开发的学习笔记",
   lastUpdated: true,
+  head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   locales: {
     root: {
       label: "简体中文",
@@ -15,6 +16,7 @@ export default defineConfig({
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    logo: "/logo.png",
     nav: [
       { text: "首页", link: "/" },
       { text: "笔记", link: "/markdown-examples" },
@@ -32,9 +34,17 @@ export default defineConfig({
     },
     lastUpdatedText: "最后更新于",
     returnToTopLabel: "返回顶部",
+    sidebarMenuLabel: "目录",
+    darkModeSwitchLabel: "切换主题",
+    darkModeSwitchTitle: "切换到深色主题",
+    lightModeSwitchTitle: "切换到浅色主题",
     socialLinks: [
       { icon: "github", link: "https://github.com/HelloCris/CrisWiki" },
     ],
+    footer: {
+      message: "Released under the MIT License.",
+      copyright: "Copyright © 2026-present HelloCris",
+    },
     // 文章目录
     sidebar: sidebarConfig,
     // 本地搜索

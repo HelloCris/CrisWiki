@@ -21,11 +21,11 @@ outline: deep
 
 ## 🎯 技术方向
 
-- **前端开发**: Vue.js、nuxt、JavaScript、TypeScript、小程序、H5
-- **全栈开发**: Node.js、Express
-- **跨端开发**: Electron、Uniapp、React Native(待学习)
-- **工具链**: Vite、Webpack、Git
-- **DevOps**: Linux
+- **前端开发**: _Vue.js、Nuxt、JavaScript、TypeScript、小程序、H5、React(todo)_
+- **全栈开发**: _Node.js、Express、MySQL、AEM、Java(learning)_
+- **跨端开发**: _Electron、Uniapp、React Native(todo)_
+- **工具链**: _Vite、Webpack、Git_
+- **DevOps**: _Linux_
 
 ## 📚 学习与分享
 
