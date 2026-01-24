@@ -2,12 +2,13 @@
 
 欢迎来到我的笔记！
 
-## HTML 笔记
+## HTML
 
 - [HTML基础](html/base.md)
 - [HTML5](html/html5.md)
 
-## CSS 笔记
+## CSS
 
 - [CSS基础](css/base.md)
+- [CSS属性](css/property.md)
 - [CSS3](css/css3.md)

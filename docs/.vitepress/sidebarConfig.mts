@@ -1,7 +1,7 @@
 // 目录菜单配置
 export const sidebarConfig = [
   {
-    text: "简介",
+    text: "👩‍💻简介",
     collapsed: false,
     items: [
       {
@@ -30,6 +30,7 @@ export const sidebarConfig = [
         text: "CSS",
         items: [
           { text: "CSS基础", link: "/notes/css/base.md" },
+          { text: "CSS属性", link: "/notes/css/property.md" },
           { text: "CSS3", link: "/notes/css/css3.md" },
         ],
       },
