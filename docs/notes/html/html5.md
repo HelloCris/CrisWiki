@@ -383,6 +383,151 @@ if ("geolocation" in navigator) {
 }
 ```
 
+### history API
+
+作用：在不刷新页面的前提下，操作浏览器历史记录和 URL，实现 SPA（单页应用）的无刷新路由。
+
+1. 方法
+
+- `pushState(state, title, url)`：添加新状态到历史记录栈顶
+- `replaceState(state, title, url)`：替换当前状态
+- `go(n)`：移动到历史记录中的第 n 个状态（n 为整数）
+- `back()`：移动到前一个状态（与 `go(-1)` 相同）
+- `forward()`：移动到下一个状态（与 `go(1)` 相同）
+
+2. 事件
+
+- `popstate`：当用户点击浏览器的前进/后退按钮或调用 `go` 方法时触发，`pushState/replaceState` 不会触发 `popstate` 事件
+
+3. 属性
+
+- `history.length`：历史记录栈的长度（当前页面索引 + 1）
+- `history.state`：当前状态对象（初始值为 `null`）
+
+### WebSocket
+
+**WebSocket** 是 HTML5 引入的一种**全双工、持久化通信协议**，允许客户端（如浏览器）与服务器之间建立**单个 TCP 连接**，实现**双向实时数据传输**。
+
+> ✅ 它解决了传统 HTTP “请求-响应” 模式的局限性，特别适合需要**低延迟、高频交互**的场景。
+
+| 特性         | HTTP（轮询/长轮询）        | WebSocket                            |
+| ------------ | -------------------------- | ------------------------------------ |
+| **连接方式** | 每次请求新建连接（短连接） | 单次握手，长期保持连接（长连接）     |
+| **通信方向** | 客户端 → 服务器（单向）    | 客户端 ⇄ 服务器（双向）              |
+| **延迟**     | 高（需反复建立连接）       | 极低（毫秒级）                       |
+| **带宽开销** | 大（每次带完整 HTTP 头）   | 小（仅少量帧头）                     |
+| **适用场景** | 普通网页加载               | 聊天室、实时游戏、股票行情、协同编辑 |
+
+::: info 前端 API 使用
+
+1. 创建连接
+
+```js
+const socket = new WebSocket("ws://localhost:8080/chat");
+// 或安全连接：new WebSocket('wss://example.com/chat')
+```
+
+2. 监听事件
+
+```js
+socket.addEventListener("open", (event) => {
+  console.log("WebSocket 连接已建立");
+  socket.send("Hello Server!");
+});
+socket.addEventListener("message", (event) => {
+  console.log("收到消息:", event.data); // 字符串或 Blob
+});
+socket.addEventListener("close", (event) => {
+  console.log("连接已关闭", event.code, event.reason);
+});
+socket.addEventListener("error", (error) => {
+  console.error("WebSocket 错误:", error);
+});
+```
+
+3. 发送消息
+
+```js
+socket.send("用户发送了一条消息"); // 只能发送字符串或二进制（ArrayBuffer/Blob）
+```
+
+4. 关闭连接
+
+```js
+socket.close(1000, "正常关闭"); // code + reason
+```
+
+5. 常用状态码（`readyState`）
+   | 值 | 常量 | 说明 |
+   | --- | ---------------------- | ---------------- |
+   | 0 | `WebSocket.CONNECTING` | 正在连接 |
+   | 1 | `WebSocket.OPEN` | 连接成功，可通信 |
+   | 2 | `WebSocket.CLOSING` | 正在关闭 |
+   | 3 | `WebSocket.CLOSED` | 已关闭或连接失败 |
+
+```js
+if (socket.readyState === WebSocket.OPEN) {
+  socket.send(data);
+}
+```
+
+:::
+
+### Web Workers
+
+**Web Workers** 是 HTML5 提供的一种**多线程机制**，允许 JavaScript 在**后台线程**中运行脚本，**不阻塞主线程（UI 线程）**，从而避免页面卡顿或无响应。
+
+> ✅ 核心价值：**让耗时任务（如计算、数据处理）在后台执行，保持页面流畅。**
+
+| 特性            | 说明                                                         |
+| --------------- | ------------------------------------------------------------ |
+| **多线程**      | Worker 运行在独立线程                                        |
+| **不阻塞 UI**   | 主线程可继续响应用户交互                                     |
+| **无 DOM 访问** | Worker 不能操作 `document`、`window`、`DOM` 元素             |
+| **通信方式**    | 通过 `postMessage()` 和 `onmessage` **传递消息**（类似事件） |
+| **同源限制**    | Worker 脚本必须与主页面同源（协议+域名+端口）                |
+| **浏览器支持**  | IE10+，现代浏览器全面支持                                    |
+
+::: info 使用示例
+
+```js
+// main.js  主线程：创建 Worker 并通信
+const worker = new Worker("worker.js");
+// 发送数据给 Worker
+worker.postMessage({ action: "calculate", num: 1000000 });
+// 接收 Worker 返回结果
+worker.onmessage = (event) => {
+  console.log("计算结果:", event.data);
+};
+// 错误处理
+worker.onerror = (error) => {
+  console.error("Worker 错误:", error);
+};
+
+// worker.js   Worker 脚本：处理任务并返回
+self.onmessage = (event) => {
+  const { action, num } = event.data;
+  if (action === "calculate") {
+    let sum = 0;
+    for (let i = 0; i < num; i++) {
+      sum += i;
+    }
+    // 将结果发回主线程
+    self.postMessage(sum);
+  }
+};
+```
+
+```js
+// 主线程终止
+worker.terminate(); // 立即杀死 Worker，无回调
+
+// 在 worker.js 中
+self.close(); // Worker 主动退出
+```
+
+:::
+
 ## web存储
 
 ### **`localStorage`** 和 **`sessionStorage`**
@@ -450,3 +595,11 @@ window.addEventListener("storage", (e) => {
 | **作用域**    | 仅 JS 可访问       | JS + 服务端均可访问        |
 | **安全性**    | 无 `HttpOnly` 保护 | 可设 `HttpOnly` 防 XSS     |
 | **过期控制**  | 需手动实现         | 原生支持 `Expires/Max-Age` |
+
+## 图形与动画
+
+### Canvas 绘图 【todo】
+
+## PWA 技术
+
+### Service Worker 【todo】
