@@ -52,6 +52,210 @@
 
 ## 盒模型
 
+### 简述
+
+CSS 盒子模型（Box Model）是 CSS 布局的核心基础，理解它对掌握页面排版、尺寸计算和元素定位至关重要。
+
+```
++----------------------------+
+|         margin             |
+|  +----------------------+  |
+|  |       border         |  |
+|  |  +----------------+  |  |
+|  |  |    padding     |  |  |
+|  |  |  +----------+  |  |  |
+|  |  |  | content  |  |  |  |
+|  |  |  +----------+  |  |  |
+|  |  +----------------+  |  |
+|  +----------------------+  |
++----------------------------+
+```
+
+在 CSS 中，**每个 HTML 元素都被视为一个矩形盒子**，由以下四部分组成（从内到外）：
+| 部分 | 说明 |
+| ----------- | -------------------------------------------------------- |
+| **content** | 实际内容区域（如文本、图片），由 `width` / `height` 控制 |
+| **padding** | 内边距，内容与边框之间的空间（透明，受背景色影响） |
+| **border** | 边框，围绕 padding 和 content |
+| **margin** | 外边距，控制与其他元素的距离（透明，不占背景） |
+
+> 📌 **总宽度公式（默认情况下）**：  
+> `总宽度 = width + padding-left + padding-right + border-left + border-right + margin-left + margin-right`  
+> （高度同理）
+
+### 两种盒模型 `box-sizing`
+
+#### 1. **标准盒模型（content-box）** —— 默认
+
+- `width` / `height` **仅指 content 区域**。
+- padding、border 会**额外增加**元素总尺寸。
+
+```css
+.box {
+  box-sizing: content-box; /* 默认值 */
+  width: 200px;
+  padding: 20px;
+  border: 5px solid #000;
+}
+/* 实际占用宽度 = 200 + 20*2 + 5*2 = 250px */
+```
+
+#### 2. **IE 盒模型（border-box）**
+
+- `width` / `height` **包含 content + padding + border**。
+- padding 和 border **不会撑大**元素总尺寸。
+
+```css
+.box {
+  box-sizing: border-box;
+  width: 200px;
+  padding: 20px;
+  border: 5px solid #000;
+}
+/* 实际占用宽度 = 200px（padding 和 border 向内挤压 content） */
+```
+
+### 盒模型相关属性
+
+| 属性                        | 说明                               | 常用值                                    |
+| --------------------------- | ---------------------------------- | ----------------------------------------- |
+| `width` / `height`          | 内容区尺寸（受 `box-sizing` 影响） | `auto`, `px`, `%`, `em`, `max-content` 等 |
+| `min-width` / `max-width`   | 最小/最大宽度（常用于响应式）      | `300px`, `100%`                           |
+| `min-height` / `max-height` | 最小/最大高度                      | `200px`, `100vh`                          |
+| `padding`                   | 内边距（4 个方向）                 | `10px`, `1em 2em`, `5%`                   |
+| `border`                    | 边框（宽度+样式+颜色）             | `1px solid #ccc`, `2px dashed red`        |
+| `margin`                    | 外边距（可为负值）                 | `10px`, `auto`, `-5px`                    |
+| `box-sizing`                | 盒模型类型                         | `content-box`（默认）, `border-box`       |
+
+::: info 注意
+
+padding、border、margin 都可以设置多个值，分别对应上、右、下、左（顺时针）。  
+例如：
+
+```css
+/* 外边距（4 个方向） */
+margin: 10px; /* 上下左右 10px */
+margin: 10px 20px; /* 上下 10px，左右 20px */
+margin: 10px 20px 30px; /* 上 10px，左右 20px，下 30px */
+margin: 10px 20px 30px 40px; /* 上 10px，右 20px，下 30px，左 40px */
+
+/* 或者分别设置上、右、下、左 */
+margin-top: 10px;
+margin-right: 20px;
+margin-bottom: 30px;
+margin-left: 40px;
+```
+
+| 属性      | 中文名 | 作用区域                | 是否影响背景                                                       | 是否可为负值                    |
+| --------- | ------ | ----------------------- | ------------------------------------------------------------------ | ------------------------------- |
+| `padding` | 内边距 | 内容 ↔ 边框之间         | ✅ 受 `background` 影响（背景会延伸到 padding 区）                 | ❌ 不可为负                     |
+| `border`  | 边框   | 围绕 padding 和 content | ✅ 边框本身有样式，背景不覆盖 border（除非设置 `background-clip`） | ❌ 宽度不可为负                 |
+| `margin`  | 外边距 | 元素 ↔ 其他元素之间     | ❌ 透明，不受背景影响                                              | ✅ 可以为负值（常用于微调布局） |
+
+:::
+
+### border
+
+`border` 属性是一个简写属性，用于设置元素的边框宽度、样式和颜色。
+| 属性 | 说明 | 常用值 |
+| -------------- | -------- | ----------------------------- |
+| `border-width` | 边框宽度 | `1px`, `2px` |
+| `border-style` | 边框样式 | `solid`, `dashed`, `dotted` |
+| `border-color` | 边框颜色 | `#000`, `red`, `rgb(255,0,0)` |
+
+```css
+border: 1px solid #ccc;
+border-top: 2px dashed red;
+```
+
+| style可选值 | 说明             | 示例效果                                                 |
+| ----------- | ---------------- | -------------------------------------------------------- |
+| `none`      | 无边框（默认值） | 完全透明，不占空间（宽度为 0）                           |
+| `hidden`    | 隐藏边框         | 与 `none` 类似，但在表格中用于解决边框冲突（优先级更高） |
+| `solid`     | 实线边框         | ————————                                                 |
+| `dashed`    | 虚线（长划线）   | - - - - - -                                              |
+| `dotted`    | 点线（圆点）     | ··········                                               |
+| `double`    | 双线边框         | ＝＝＝＝＝＝（两条线，中间有间隙）                       |
+
+---
+
+`border-radius` 实现边框圆角。  
+`border-radius` 可以接受 **1 到 4 个值**，以及 `/` 分隔的两个方向（水平/垂直）半径。其顺序遵循“顺时针”原则。
+| 数量 | 含义 |
+| ---------- | --------------------------------------------------------------------- |
+| **1 个值** | 四个角都使用相同的圆角半径（如：`10px`） |
+| **2 个值** | 第一个控制左上/右下角，第二个控制右上/左下角（如：`10px 20px`） |
+| **3 个值** | 左上 → 右上/左下 → 右下（如：`10px 20px 30px`） |
+| **4 个值** | 按顺时针依次设置：左上、右上、右下、左下（如：`10px 20px 30px 40px`） |
+
+- 使用 `/` 设置水平与垂直半径（椭圆弧）。**前一个值**：控制**水平方向**（x 轴）的半径；**后一个值**：控制**垂直方向**（y 轴）的半径
+
+```css
+border-radius: 100px / 50px;
+```
+
+- 单独设置某个角点的圆角，可以使用以下**独立属性**来精确控制每个角：
+
+```css
+// 圆角
+border-top-right-radius: 100px;
+border-top-left-radius: 100px;
+border-bottom-left-radius: 100px;
+border-bottom-right-radius: 100px;
+// 椭圆角
+border-top-right-radius: 100px 50px;
+border-bottom-left-radius: 80px 40px;
+border-bottom-right-radius: 60px 30px;
+border-top-left-radius: 40px 20px;
+```
+
+> ⚠️ 格式：`水平半径 垂直半径`（顺序不可颠倒）
+
+---
+
+边框阴影 `box-shadow`
+
+```css
+box-shadow: h v blur spread color inset;
+/* h：水平方向的偏移值（必填）, 正值向右，负值向左 */
+/* v：垂直方向的偏移值（必填）, 正值向下，负值向上 */
+/* blur：模糊半径（可选，默认为 0）, 值越大，阴影越模糊 */
+/* spread：阴影的尺寸，扩展或收缩阴影大小（可选，默认为 0）, 正值扩大阴影范围，负值缩小阴影范围 */
+/* color：阴影颜色（可选，默认为黑色） */
+/* inset: 内阴影（可选，默认是外阴影） */
+
+/* 外阴影：向右下偏移，模糊，扩展，红色 */
+box-shadow: 10px 10px 5px 2px red;
+/* 内阴影：向内偏移，不模糊，蓝色 */
+box-shadow: inset 0 0 5px blue;
+
+/* 多重阴影： */
+box-shadow:
+  2px 2px 4px rgba(0, 0, 0, 0.3),
+  4px 4px 8px rgba(0, 0, 0, 0.5);
+```
+
+> 💡 提示：`box-shadow` 和 `text-shadow` 的语法结构一致，都支持多重阴影。
+
+### margin
+
+```css
+margin: 20px;
+margin: 0 auto; /* 水平居中（块级元素需指定 width） */
+margin-left: auto;
+margin-right: auto; /* 等效 */
+```
+
+关键特性：
+
+1. 可为负值：常用于“拉近”元素。
+2. 外边距合并（Margin Collapse）：
+   - 相邻块级元素的垂直 margin 会合并（取最大值，非相加）。
+   - 父子元素之间也可能合并（父无 border/padding 时）。
+3. margin: auto 的妙用：
+   - 在 Flex/Grid 容器中：可实现任意方向居中。
+   - 在普通块级元素中：仅水平居中有效（需固定宽度）。
+
 ## 附录
 
 ### 附1：不换行展示省略号（单行 & 多行）

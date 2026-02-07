@@ -11,16 +11,20 @@ CSS3 是 CSS（层叠样式表）的第三代主要标准，它并不是一个�
 
 ## 盒模型与边框/背景增强
 
+- **`box-sizing`**：改变盒模型计算方式（`content-box` vs `border-box`）。
 - **`border-radius`**：实现圆角边框。
 - **`box-shadow`**：为元素添加阴影。
 - **`text-shadow`**：为文字添加阴影。
-- **多背景图**：一个元素可设置多个 `background-image`。
+- **`border-image`**：用图像作为边框。
+
+详细请见[盒模型](/notes/css/property.html#盒模型)
+
 - **渐变背景**：
   - `linear-gradient()`（线性渐变）
   - `radial-gradient()`（径向渐变）
-- **`border-image`**：用图像作为边框。
 - **`background-size`**：控制背景图像尺寸（如 `cover`、`contain`）。
-- **`box-sizing`**：改变盒模型计算方式（`content-box` vs `border-box`）。
+
+详细请见[文本属性](/notes/css/property.html#文本属性)
 
 ## 文本与字体增强
 
