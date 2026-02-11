@@ -539,9 +539,184 @@ animation-duration: 2s;
 
 ### flex
 
+- 替代传统 `float` + `position` 的复杂布局方式。
+- 父容器设为 `display: flex;` 后，其**直接子元素**成为“伸缩项”（flex items），默认**横向排列**。
+
+#### 父容器属性
+
+1. `justify-content`（主轴对齐）
+
+控制子元素在**主轴**（默认水平方向）上的对齐方式：
+
+> - `flex-start`：靠左（默认）
+> - `flex-end`：靠右
+> - `center`：居中
+> - `space-between`：两端对齐，中间等间距
+> - `space-around`：每个子元素两侧等间距（元素间间距 = 2 × 边缘间距）
+
+2. `align-items`（侧轴对齐）
+
+控制子元素在**侧轴**（默认垂直方向）上的对齐：
+
+> - `flex-start`：顶部对齐
+> - `flex-end`：底部对齐
+> - `center`：垂直居中
+> - `stretch`：拉伸填满（默认，前提是子元素未设高度）
+> - `baseline`：按文本基线对齐
+
+3. `flex-flow`（简写属性）
+
+是 `flex-direction` + `flex-wrap` 的简写，默认值：`row nowrap`
+
+> - **`flex-wrap`**：是否换行
+>   - `nowrap`（默认）：不换行，压缩子元素
+>   - `wrap`：换行（从上到下）
+>   - `wrap-reverse`：反向换行（从下到上）
+
+> - **`flex-direction`**：主轴方向
+>   - `row`：水平从左到右（默认）
+>   - `row-reverse`：水平从右到左
+>   - `column`：垂直从上到下
+>   - `column-reverse`：垂直从下到上
+
+---
+
+#### 子元素属性
+
+1. `align-self`
+
+单独覆盖 `align-items`，为**单个子元素**设置侧轴对齐方式（值同 `align-items`）。
+
+2. `flex`（核心属性，简写）
+
+语法：`flex: [grow] [shrink] [basis]`
+
+- **`flex-grow`**（扩展比例，默认 0）  
+  占据**剩余空间**的比例。例如：两个子元素 `flex-grow: 1` 和 `2`，则按 1:2 分配剩余空间。
+
+- **`flex-shrink`**（收缩比例，默认 1）  
+  当空间不足时，按比例缩小。设为 `0` 则不收缩（可能溢出）。
+
+- **`flex-basis`**：设定初始主轴尺寸（如 `100px`, `auto` 等）
+
 ### grid
 
+- **定位**：专为**二维布局**（行 + 列）设计的布局系统，适合构建复杂页面结构（如仪表盘、相册、整体页面框架）。
+- **启用方式**：在父容器设置 `display: grid` 或 `display: inline-grid`，其直接子元素自动成为“网格项”（grid items）。
+
+#### 父容器属性（Grid Container）
+
+**1. 定义网格轨道（Tracks）**
+
+| 属性                    | 说明             | 示例                                    |
+| ----------------------- | ---------------- | --------------------------------------- |
+| `grid-template-columns` | 定义**列**的宽度 | `grid-template-columns: 100px 1fr 2fr;` |
+| `grid-template-rows`    | 定义**行**的高度 | `grid-template-rows: auto 100px;`       |
+| `grid-template-areas`   | 通过命名区域布局 | 见下文示例                              |
+
+**单位说明**：
+
+- `fr`：**弹性单位**（剩余空间比例），如 `1fr 2fr` 表示 1:2 分配剩余空间
+- `auto`：根据内容自适应
+- `minmax(min, max)`：设定轨道尺寸范围，如 `minmax(100px, 1fr)`
+- `repeat()`：简化重复值，如 `repeat(3, 1fr)` = `1fr 1fr 1fr`
+
+**2. 间距与对齐**
+
+| 属性                             | 说明                                                        |
+| -------------------------------- | ----------------------------------------------------------- |
+| `gap` / `row-gap` / `column-gap` | 设置**行/列间隙**（替代 `grid-row-gap` 等旧属性）           |
+| `justify-items`                  | **所有网格项**在**行轴**（水平）上的对齐方式                |
+| `align-items`                    | **所有网格项**在**列轴**（垂直）上的对齐方式                |
+| `justify-content`                | 整个网格在容器中的**水平对齐**（当网格总宽 < 容器宽时生效） |
+| `align-content`                  | 整个网格在容器中的**垂直对齐**（当网格总高 < 容器高时生效） |
+
+> ⚠️ 注意：
+>
+> - `justify-items`/`align-items` 作用于**单个网格项**
+> - `justify-content`/`align-content` 作用于**整个网格**
+
+**3. 自动填充轨道**
+
+- `grid-auto-columns` / `grid-auto-rows`：定义**隐式创建的轨道**尺寸（当网格项超出显式定义的网格时）
+- `grid-auto-flow`：控制自动放置规则
+  - `row`（默认）：逐行填充
+  - `column`：逐列填充
+  - `dense`：尝试填充空白（可能导致顺序错乱）
+
+---
+
+#### 子元素属性（Grid Items）
+
+**1. 定位与跨度**
+
+| 属性                                    | 说明                       | 示例                                           |
+| --------------------------------------- | -------------------------- | ---------------------------------------------- |
+| `grid-column-start` / `grid-column-end` | 指定**列起止线**           | `grid-column: 2 / 4;`（从第2线到第4线，跨2列） |
+| `grid-row-start` / `grid-row-end`       | 指定**行起止线**           | `grid-row: 1 / span 2;`（从第1线开始跨2行）    |
+| **简写**                                | `grid-column` / `grid-row` | `grid-column: 1 / -1;`（占满整行）             |
+
+> 🔢 **线编号规则**：
+>
+> - 从 `1` 开始，`-1` 表示最后一根线
+> - 跨度可用 `span N`（如 `span 2` 表示跨2轨道）
+
+**2. 区域命名（推荐！）**
+
+```css
+/* 父容器 */
+.container {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-rows: 60px 1fr 40px;
+  grid-template-columns: 200px 1fr;
+}
+
+/* 子元素 */
+.header {
+  grid-area: header;
+}
+.sidebar {
+  grid-area: sidebar;
+}
+.main {
+  grid-area: main;
+}
+.footer {
+  grid-area: footer;
+}
+```
+
+**3. 单项对齐（覆盖父容器设置）**
+
+- `justify-self`：单个网格项在**行轴**对齐
+- `align-self`：单个网格项在**列轴**对齐  
+  （值同 `justify-items`/`align-items`，如 `start`, `center`, `stretch`）
+
 ### 多列布局（Multi-column Layout）
+
+**用途**：  
+模拟报纸排版，将长段文本分成多列显示，提升可读性，尤其适用于大屏设备。
+
+**常用属性**：
+| 属性 | 说明 |
+|------|------|
+| `column-count` | 设置列的数量 |
+| `column-width` | 设置每列的理想宽度 |
+| `column-gap` | 设置列与列之间的间距 |
+| `column-rule` | 设置列之间的分隔线（宽度、样式、颜色） |
+| `column-span` | 设置元素跨越的列数（`1` 或 `all`） |
+| `max-height` | 可限制列容器高度；内容会从左到右、从上到下依次填充各列 |
+
+**重要规则（“取大优先”原则）**：
+
+- 当同时设置 `column-count` 和 `column-width` 时，则优先保证列数，浏览器会自动计算列宽。
+- **若手动设置的 `column-width` > 自动计算值 → 以手动设置为准**。
+- **若手动设置的 `column-width` < 自动计算值 → 以自动计算值为准**。
+- 若列宽总和小于容器宽度，实际列宽可能被拉大以填满容器。
 
 ## 附录
 
