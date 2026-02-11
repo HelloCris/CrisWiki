@@ -21,6 +21,7 @@ export const sidebarConfig = [
       { text: "目录", link: "/notes/index.md" },
       {
         text: "HTML",
+        collapsed: true,
         items: [
           { text: "HTML基础", link: "/notes/html/base.md" },
           { text: "HTML5", link: "/notes/html/html5.md" },
@@ -28,10 +29,31 @@ export const sidebarConfig = [
       },
       {
         text: "CSS",
+        collapsed: true,
         items: [
           { text: "CSS基础", link: "/notes/css/base.md" },
           { text: "CSS属性", link: "/notes/css/property.md" },
           { text: "CSS3", link: "/notes/css/css3.md" },
+        ],
+      },
+      {
+        text: "JavaScript",
+        collapsed: true,
+        items: [
+          { text: "JavaScript基础", link: "/notes/js/base.md" },
+          { text: "JavaScript高级", link: "/notes/js/advanced.md" },
+          { text: "js模块化", link: "/notes/js/module.md" },
+          { text: "正则表达式", link: "/notes/js/regex.md" },
+        ],
+      },
+      {
+        text: "其他",
+        collapsed: true,
+        items: [
+          { text: "Linux", link: "/notes/others/linux.md" },
+          { text: "Git", link: "/notes/others/git.md" },
+          { text: "网络", link: "/notes/others/network.md" },
+          { text: "浏览器工作原理", link: "/notes/others/browser.md" },
         ],
       },
     ],
