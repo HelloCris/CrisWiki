@@ -1,0 +1,38 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [source] # 👈 监听 source 分支
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: source # 确保检出 source 分支
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run docs:build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/.vitepress/dist
+          publish_branch: master # 👈 产物推送到 master（用于 GitHub Pages）
+          destination_dir: .
+          keep_files: false # 清空 master，只放静态文件
+          commit_message: "Deploy: [${{ github.ref_name }}] by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}@${{ github.sha }}"
