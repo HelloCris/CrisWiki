@@ -122,6 +122,7 @@
 | which / whereis | 查询命令的可执行路径（`which`）或相关文件位置（`whereis`）                                        |
 | date            | 查看或设置系统时间                                                                                |
 | alias           | 查看或设置简短别名，提升效率。示例：`alias ll='ls -l'`                                            |
+| tail            | 查看文件末尾内容（10 行）<br>• `tail -n 20 file.log`<br>• `tail -f file.log`：实时监控            |
 
 ### 打包
 
@@ -250,6 +251,24 @@ find . -type f -exec chmod 644 {} +
 > 这四个命令经常串联使用，例如：  
 > `find . -name "*.log" -print0 | xargs -0 grep "ERROR" | awk '{print $1, $4}'`  
 > 实现：查找日志 → 筛选错误 → 提取关键字段。
+
+### 网络
+
+| 命令               | 用途           |
+| ------------------ | -------------- |
+| `ping`             | 测试网络连通性 |
+| `curl`             | 测试 HTTP 接口 |
+| `dig` / `nslookup` | DNS 查询       |
+
+### 权限与用户管理
+
+| 命令    | 用途说明                                   | 常用示例                                                                                                                     |
+| ------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `chmod` | 修改文件或目录的权限（读 r、写 w、执行 x） | `chmod 755 script.sh`<br>→ 所有者可读写执行，组和其他人可读执行<br>`chmod +x file`<br>→ 给文件添加执行权限                   |
+| `chown` | 修改文件或目录的所有者（可同时改所属组）   | `chown alice file.txt`<br>→ 将文件所有者改为 `alice`<br>`chown alice:dev file.txt`<br>→ 所有者改为 `alice`，所属组改为 `dev` |
+| `chgrp` | 修改文件或目录的所属组                     | `chgrp developers project/`<br>→ 将 `project/` 目录的所属组改为 `developers`                                                 |
+| `sudo`  | 以超级用户（root）或其他用户身份执行命令   | `sudo systemctl restart nginx`<br>→ 以 root 权限重启服务<br>`sudo -u bob whoami`<br>→ 以用户 `bob` 身份执行 `whoami`         |
+| `su`    | 切换到其他用户（默认切换到 root）          | `su -`<br>→ 切换到 root 并加载其环境<br>`su - alice`<br>→ 切换到用户 `alice`                                                 |
 
 ## 附录
 
