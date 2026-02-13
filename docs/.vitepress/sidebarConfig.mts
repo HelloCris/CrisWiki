@@ -54,7 +54,6 @@ export const sidebarConfig = [
           { text: "Linux", link: "/notes/others/linux.md" },
           { text: "Git", link: "/notes/others/git.md" },
           { text: "网络", link: "/notes/others/network.md" },
-          { text: "浏览器工作原理", link: "/notes/others/browser.md" },
         ],
       },
     ],
