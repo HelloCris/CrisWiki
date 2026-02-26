@@ -1,4 +1,4 @@
-# 网络【todo】
+# 网络
 
 ## 基础概念
 
@@ -574,8 +574,78 @@ Client → Server: ACK (ack=y+1) 第三次握手：证明客户端能接收
 
 ### XSS攻击
 
+**XSS（跨站脚本攻击，Cross-Site Scripting）**
+
+- **原理：** 攻击者向网页中注入恶意脚本（通常是 JavaScript），当其他用户浏览该页面时，脚本在受害者浏览器中执行，从而窃取 Cookie、会话令牌、重定向到钓鱼网站等。
+
+- **主要类型：**
+  | 类型 | 特点 | 示例场景 |
+  |------|------|--------|
+  | **存储型 XSS** | 恶意脚本永久存储在服务器（如评论、帖子） | 用户发布含 `<script>` 的评论，所有访问者中招 |
+  | **反射型 XSS** | 恶意脚本通过 URL 参数传入，服务器反射回页面 | 诱导用户点击 `?search=<script>...</script>` 链接 |
+  | **DOM 型 XSS** | 漏洞在前端 JavaScript 中，不经过服务器 | `location.hash` 被直接写入 DOM |
+
+- **危害：**
+  1. 窃取用户 Cookie / Session ID（尤其是未设 `HttpOnly` 的）
+  2. 劫持用户操作（如发帖、转账）
+  3. 植入键盘记录器、挖矿脚本等
+
+- **防御措施：**
+  1. 输入过滤与转义：对用户输入的 `<`, `>`, `&`, `"`, `'` 等字符进行 HTML 实体编码。
+  2. 输出编码：根据上下文（HTML、JS、URL）做不同转义。
+  3. 设置 Cookie 安全属性：
+     - `HttpOnly`：禁止 JS 访问 Cookie
+     - `Secure`：仅 HTTPS 传输
+  4. 使用 CSP（见下文）
+  5. 避免直接操作 DOM（如慎用 `innerHTML`, `eval()`）
+
 ### CSRF攻击
+
+**CSRF（跨站请求伪造，Cross-Site Request Forgery）**
+
+- **原理：** 攻击者诱导已登录用户在不知情的情况下，向目标网站发起**非自愿的请求**（如修改密码、转账）。由于浏览器自动携带 Cookie，服务器误认为是合法操作。
+
+  > 前提：用户已登录目标网站，且认证依赖 Cookie。
+
+- **攻击示例：**
+
+  ```html
+  <!-- 攻击者网站上的图片 -->
+  <img src="https://bank.com/transfer?to=attacker&amount=1000" />
+  ```
+
+  用户访问该页面时，浏览器自动携带 `bank.com` 的 Cookie 发起转账请求。
+
+- **危害：**
+  1. 非授权资金转移
+  2. 修改账户信息（邮箱、密码）
+  3. 删除数据等破坏性操作
+
+- **防御措施：**
+  1. 使用 CSRF Token：
+     - 服务端生成随机 token，嵌入表单或 header
+     - 每次请求需携带该 token，服务端校验
+  2. 检查 `Origin` / `Referer` 头（辅助手段，不可靠）
+  3. 关键操作要求二次验证（如短信验证码、密码确认）
+  4. 设置 Cookie 的 `SameSite` 属性：
+     - `SameSite=Lax`：允许同站 GET 请求（兼顾安全与体验）
+     - `SameSite=Strict`：完全禁止跨站携带 Cookie（更安全但影响部分功能）
+
+  > 💡 注意：**CSRF 无法窃取数据，只能“冒用身份发起操作”**；而 XSS 可以读取页面任意内容。
 
 ### CSP内容安全策略
 
-## 性能优化中的网络技巧
+**CSP（内容安全策略，Content Security Policy）**
+
+- **原理：** 通过 HTTP 响应头 `Content-Security-Policy`，**白名单机制**限制浏览器可加载和执行的资源（脚本、样式、图片、iframe 等），从源头阻断 XSS、数据注入等攻击。
+
+- **核心指令示例：**
+  ```http
+  Content-Security-Policy:
+    default-src 'self';                     /* 默认只加载同源资源 */
+    script-src 'self' https://cdn.example.com 'unsafe-inline'; /* 脚本来源 */
+    style-src 'self' 'unsafe-inline';       /* 样式来源 */
+    img-src *;                              /* 图片可来自任意域 */
+    connect-src 'self';                     /* AJAX/fetch 仅限同源 */
+    frame-ancestors 'none';                 /* 禁止被嵌入 iframe（防点击劫持） */
+  ```
