@@ -1,6 +1,6 @@
-# [CrisWiki](https://hellocris.github.io/)
+# <a href="https://hellocris.github.io/" target="_blank" rel="noopener noreferrer">CrisWiki</a>
 
-> 在线访问：[CrisWiki](https://hellocris.github.io/)
+> 在线访问：<a href="https://hellocris.github.io/" target="_blank" rel="noopener noreferrer">CrisWiki</a>
 
 > vitepress项目，快速搭建笔记文档网站
 
