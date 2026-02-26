@@ -1,10 +1,13 @@
-# CrisWiki
+# [CrisWiki](https://hellocris.github.io/)
 
-vitepress项目，快速搭建笔记文档网站
+> 在线访问：[CrisWiki](https://hellocris.github.io/)
+
+> vitepress项目，快速搭建笔记文档网站
 
 ## 项目结构
 
 ```bash
+├── .github/          # Github Actions 配置文件
 ├── .vscode/          # VS Code配置文件
 ├── docs/             # 文档源码目录
 │   ├── .vitepress/   # VitePress配置目录
@@ -14,7 +17,7 @@ vitepress项目，快速搭建笔记文档网站
 │   ├── growth/       # 成长相关文档
 │   ├── interview/    # 面试相关文档
 │   ├── notes/        # 技术笔记文档
-│   ├── profile/      # 个人资料
+│   ├── profile/      # 个人信息说明
 │   ├── projects/     # 项目相关文档
 │   ├── public/       # 静态资源
 │   └── index.md      # 首页
@@ -43,4 +46,18 @@ npm install
 
 ```bash
 npm run docs:dev
+```
+
+### 打包 & 预览
+
+打包项目：
+
+```bash
+npm run docs:build
+```
+
+预览打包后的项目：
+
+```bash
+npm run docs:preview
 ```
