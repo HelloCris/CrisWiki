@@ -20,6 +20,14 @@
 - [js模块化](js/module.md)
 - [正则表达式](js/regex.md)
 
+## TypeScript
+
+- [TypeScript](ts/index.md)
+
+## Node.js
+
+- [Node.js](nodejs/index.md)
+
 ## 其他
 
 - [Linux](others/linux.md)

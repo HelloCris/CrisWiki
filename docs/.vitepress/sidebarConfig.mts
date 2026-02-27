@@ -48,6 +48,14 @@ export const sidebarConfig = [
         ],
       },
       {
+        text: "TypeScript",
+        link: "/notes/ts/index.md",
+      },
+      {
+        text: "Node.js",
+        link: "/notes/nodejs/index.md",
+      },
+      {
         text: "其他",
         collapsed: true,
         items: [
