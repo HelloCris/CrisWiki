@@ -440,7 +440,7 @@ const aLink = <HTMLAnchorElement>document.getElementById("link");
 
 **技巧：** 在浏览器控制台，通过 `console.dir()` 打印 DOM 元素，在属性列表的最后面，即可看到该元素的类型。
 
-![dom类型查看](asset/dom类型查看.png)
+![dom类型查看](asset/DOMType.png)
 
 ### 字面量类型
 
