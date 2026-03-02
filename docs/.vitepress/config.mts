@@ -25,7 +25,7 @@ export default defineConfig({
       { text: "成长", link: "/growth/index.md" },
     ],
     outline: {
-      level: [2, 3],
+      level: [2, 4],
       label: "页面导航",
     },
     docFooter: {

@@ -1,0 +1,34 @@
+/* 自动为 h2, h3, h4 添加编号 */
+/* 初始化 h2 计数器 */
+.content {
+  counter-reset: h2;
+}
+
+.content h2::before {
+  counter-increment: h2;
+  content: counter(h2) "  ";
+}
+.content h3::before {
+  counter-increment: h3;
+  content: counter(h2) "." counter(h3) "  ";
+}
+.content h4::before {
+  counter-increment: h4;
+  content: counter(h2) "." counter(h3) "." counter(h4) "  ";
+}
+
+/* 重置子标题计数器 */
+.content h2 {
+  counter-reset: h3;
+}
+.content h3 {
+  counter-reset: h4;
+}
+
+/* 可选：调整样式 */
+.content h2::before,
+.content h3::before,
+.content h4::before {
+  color: #0069af;
+  font-weight: bold;
+}
