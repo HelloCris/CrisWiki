@@ -32,3 +32,19 @@
   color: #0069af;
   font-weight: bold;
 }
+
+/* 修改 main 区域链接的颜色 */
+.content .main a {
+  color: #000000;
+  text-decoration: underline;
+}
+
+/* 取消 _profile_who-is-cris 标题的编号 */
+.content ._profile_who-is-cris h2::before {
+  display: none;
+}
+
+/* 目录页链接颜色改为黑色 */
+.vp-doc h3 a {
+  color: #000000;
+}
