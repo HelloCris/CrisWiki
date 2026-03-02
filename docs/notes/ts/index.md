@@ -657,15 +657,259 @@ const n: number = obj;
 
 ### class 类
 
+TypeScript 全面支持 ES2015 中引入的 `class` 关键字，并为其添加了类型注解和其他语法（比如，可见性修饰符等）。
+
+**class 基本使用，如下：**
+
+```ts
+class Person {}
+```
+
+```ts
+const p: Person;
+const p = new Person();
+```
+
+**解释：**
+
+1. 根据 TS 中的类型推论，可以知道 `Person` 类的实例对象 `p` 的类型是 `Person`。
+2. TS 中的 `class`，不仅提供了 class 的语法功能，也作为一种类型存在。
+
+---
+
+**实例属性初始化：**
+
+```ts
+class Person {
+  age: number;
+  gender = "男";
+}
+```
+
+**解释：**
+
+1. 声明成员 `age`，类型为 `number`（没有初始值）。
+2. 声明成员 `gender`，并设置初始值，此时，可省略类型注解（TS 类型推论为 `string` 类型）。
+
+---
+
+**构造函数：**
+
+```ts
+class Person {
+  age: number;
+  gender: string;
+
+  constructor(age: number, gender: string) {
+    this.age = age;
+    this.gender = gender;
+  }
+}
+```
+
+**解释：**
+
+1. 成员初始化（比如，`age: number`）后，才可以通过 `this.age` 来访问实例成员。
+2. 需要为构造函数指定类型注解，否则会被隐式推断为 `any`；构造函数不需要返回值类型。
+
+---
+
+**实例方法：**
+
+```ts
+class Point {
+  x = 10;
+  y = 10;
+
+  scale(n: number): void {
+    this.x *= n;
+    this.y *= n;
+  }
+}
+```
+
+**解释：** 方法的类型注解（参数和返回值）与函数用法相同。
+
+#### ts的继承和实现
+
+**类继承的两种方式：**
+
+1. `extends`（继承父类）
+2. `implements`（实现接口）
+
+说明：JS 中只有 `extends`，而 `implements` 是 TS 提供的。
+
+---
+
+```ts
+class Animal {
+  move() {
+    console.log("Moving along!");
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    console.log("汪！");
+  }
+}
+
+const dog = new Dog();
+```
+
+**解释：**
+
+1. 通过 `extends` 关键字实现继承。
+2. 子类 `Dog` 继承父类 `Animal`，则 `Dog` 的实例对象 `dog` 就同时具有了父类 `Animal` 和子类 `Dog` 的所有属性和方法。
+
+---
+
+```ts
+interface Singable {
+  sing(): void;
+}
+
+class Person implements Singable {
+  sing() {
+    console.log("你是我的小呀小苹果儿");
+  }
+}
+```
+
+**解释：**
+
+1. 通过 `implements` 关键字让 class 实现接口。
+2. `Person` 类实现接口 `Singable` 意味着，`Person` 类必须提供 `Singable` 接口中指定的所有方法和属性。
+
+#### 可见性修饰符
+
+类成员可见性：可以使用 TS 来控制 class 的方法或属性对于 class 外的代码是否可见。
+
+可见性修饰符包括：
+
+1. `public`（公有的）
+2. `protected`（受保护的）
+3. `private`（私有的）
+
+| 修饰符      | 可见范围                                                   |
+| ----------- | ---------------------------------------------------------- |
+| `public`    | 所有地方（默认）                                           |
+| `protected` | 当前类、子类内部（可通过 `this` 访问），但不能通过实例访问 |
+| `private`   | 仅限当前类内部（子类和实例均无法访问）                     |
+
+---
+
+1. `public`：表示公有的、公开的，公有成员可以被任何地方访问，**默认可见性**。
+
+```ts
+class Animal {
+  public move() {
+    console.log("Moving along!");
+  }
+}
+```
+
+**解释：**
+
+1. 在类属性或方法前面添加 `public` 关键字，来修饰该属性或方法是共有的。
+2. 因为 `public` 是默认可见性，所以**可以直接省略**。
+
+---
+
+2. `protected`：表示受保护的，仅对其声明所在类和子类中（非实例对象）可见。
+
+```ts
+class Animal {
+  protected move() {
+    console.log("Moving along!");
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    console.log("汪！");
+    this.move();
+  }
+}
+```
+
+**解释：**
+
+1. 在类属性或方法前面添加 `protected` 关键字，来修饰该属性或方法是受保护的。
+2. 在子类的方法内部可以通过 `this` 来访问父类中受保护的成员，但是，**对实例不可见！**
+
+> ⚠️ 示例说明：`dog.move()` 会报错，因为 `move` 是 `protected`，不能通过实例直接调用。
+
+---
+
+3. `private`：表示私有的，只在当前类中可见，对实例对象以及子类也是不可见的。
+
+```ts
+class Animal {
+  private move() {
+    console.log("Moving along!");
+  }
+  walk() {
+    this.move();
+  }
+}
+```
+
+**解释：**
+
+1. 在类属性或方法前面添加 `private` 关键字，来修饰该属性或方法是私有的。
+2. 私有的属性或方法只在当前类中可见，对子类和实例对象也都是不可见的！
+
+> ⚠️ 示例说明：`dog.move()` 和 `Dog` 类内部调用 `this.move()` 都会报错，因为 `move` 是 `private`。
+
+#### 只读修饰符
+
+除了可见性修饰符之外，还有一个常见修饰符就是：`readonly`（只读修饰符）。
+
+`readonly`：表示只读，用来防止在构造函数之外对属性进行赋值。
+
+```ts
+class Person {
+  readonly age: number = 18;
+  constructor(age: number) {
+    this.age = age;
+  }
+}
+```
+
+**解释：**
+
+1. 使用 `readonly` 关键字修饰该属性是只读的，注意只能修饰属性不能修饰方法。
+2. 注意：属性 `age` 后面的类型注解（比如，此处的 `number`）如果不加，则 `age` 的类型为 `18`（字面量类型）。
+3. 接口或者 `{}` 表示的对象类型，也可以使用 `readonly`。
+
 ### 类型兼容性
+
+#### 函数间的类型兼容性
 
 ### 交叉类型
 
 ### 泛型
 
+#### 范型的基本使用
+
+#### 简化泛型函数的调用
+
+#### 泛型约束
+
+#### 泛型接口
+
+#### 泛型类
+
+#### 泛型工具类型
+
 ### 索引签名类型
 
 ### 映射类型
+
+#### 泛型工具类型Partial
+
+#### 索引查询类型
 
 ## 类型声明文件
 
