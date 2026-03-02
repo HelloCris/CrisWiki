@@ -885,6 +885,94 @@ class Person {
 
 ### 类型兼容性
 
+两种类型系统：
+
+1. Structural Type System（结构化类型系统）
+2. Nominal Type System（标明类型系统）
+
+TS 采用的是结构化类型系统，也叫做 duck typing（鸭子类型），**类型检查关注的是值所具有的形状**。
+
+也就是说，在结构类型系统中，如果两个对象具有相同的形状，则认为它们属于同一类型。
+
+```ts
+class Point {
+  x: number;
+  y: number;
+}
+class Point2D {
+  x: number;
+  y: number;
+}
+
+const p: Point = new Point2D();
+```
+
+**解释：**
+
+1. `Point` 和 `Point2D` 是两个名称不同的类。
+2. 变量 `p` 的类型被显示标注为 `Point` 类型，但是，它的值却是 `Point2D` 的实例，并且没有类型错误。
+3. 因为 TS 是结构化类型系统，只检查 `Point` 和 `Point2D` 的结构是否相同（相同，都具有 `x` 和 `y` 两个属性，属性类型也相同）。
+4. 但是，如果在 Nominal Type System 中（比如，C#、Java 等），它们是不同的类，类型无法兼容。
+
+注意：在结构化类型系统中，如果两个对象具有相同的形状，则认为它们属于同一类型，这种说法并不准确。
+
+**更准确的说法：对于对象类型来说，y 的成员至少与 x 相同，则 x 兼容 y（成员多的可以赋值给少的）。**
+
+```ts
+class Point {
+  x: number;
+  y: number;
+}
+class Point3D {
+  x: number;
+  y: number;
+  z: number;
+}
+const p: Point = new Point3D();
+```
+
+**解释：**
+
+1. `Point3D` 的成员**至少与** `Point` 相同，则 `Point` 兼容 `Point3D`。
+2. 所以，成员多的 `Point3D` 可以赋值给成员少的 `Point`。
+
+> ✅ 示例说明：`Point3D` 包含了 `x`、`y`、`z`，而 `Point` 只需要 `x` 和 `y`，因此 `Point3D` 实例可以赋值给 `Point` 类型变量。
+
+除了 class 之外，TS 中的其他类型也存在相互兼容的情况，包括：
+
+1. 接口兼容性
+2. 函数兼容性等。
+
+- 接口之间的兼容性，类似于 class。并且，class 和 interface 之间也可以兼容。
+
+```ts
+interface Point {
+  x: number;
+  y: number;
+}
+interface Point2D {
+  x: number;
+  y: number;
+}
+let p1: Point;
+let p2: Point2D = p1;
+
+interface Point3D {
+  x: number;
+  y: number;
+  z: number;
+}
+let p3: Point3D;
+p2 = p3;
+
+class Point3D {
+  x: number;
+  y: number;
+  z: number;
+}
+let p3: Point2D = new Point3D();
+```
+
 #### 函数间的类型兼容性
 
 ### 交叉类型
