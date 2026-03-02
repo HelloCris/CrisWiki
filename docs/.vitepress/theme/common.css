@@ -43,8 +43,3 @@
 .content ._profile_who-is-cris h2::before {
   display: none;
 }
-
-/* 目录页链接颜色改为黑色 */
-.vp-doc h3 a {
-  color: #000000;
-}
