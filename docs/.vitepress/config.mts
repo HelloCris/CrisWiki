@@ -17,11 +17,20 @@ export default defineConfig({
         content: "一个半路出家的前端开发的学习笔记",
       },
     ],
-    ["meta", { property: "og:image", content: "/logo.png" }],
+    [
+      "meta",
+      { property: "og:image", content: "https://hellocris.github.io/logo.png" },
+    ],
     ["meta", { property: "og:url", content: "https://hellocris.github.io/" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
-    ["meta", { name: "twitter:image", content: "/logo.png" }],
+    [
+      "meta",
+      {
+        name: "twitter:image",
+        content: "https://hellocris.github.io/logo.png",
+      },
+    ],
   ],
   locales: {
     root: {
