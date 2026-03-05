@@ -641,13 +641,125 @@ npm init -y
 
 ### 装包、删包
 
+`package.json` 文件中，有一个 **dependencies** 节点，专门用来记录您使用 `npm install` 命令安装了哪些包。
+
+可以运行 `npm install` 命令（或 `npm i`）一次性安装所有的依赖包：
+
+```bash
+npm install
+```
+
+可以运行 `npm uninstall` 命令，来卸载指定的包：
+
+```bash
+npm uninstall moment
+```
+
+> **注意：** `npm uninstall` 命令执行成功后，会把卸载的包，自动从 `package.json` 的 `dependencies` 中移除掉。
+
 ### devDependencies
 
-### 淘宝 npm 镜像——下包速度慢问题解决
+如果某些包**只在项目开发阶段**会用到，在**项目上线之后不会用到**，则建议把这些包记录到 **devDependencies** 节点中。
+
+与之对应的，如果某些包在**开发**和**项目上线之后**都需要用到，则建议把这些包记录到 **dependencies** 节点中。
+
+您可以使用如下的命令，将包记录到 **devDependencies** 节点中：
+
+```bash
+// 安装指定的包，并记录到 devDependencies 节点中
+npm i 包名 -D
+
+// 注意：上述命令是简写形式，等价于下面完整的写法：
+npm install 包名 --save-dev
+```
+
+> 判断应该装包到devDependencies节点还是dependencies节点，直接npmjs.com官网查一下对应包的安装命令即可。
+
+### npm镜像
+
+> 淘宝在国内搭建了一个服务器，专门把国外官方服务器上的包同步到国内的服务器，然后在国内提供下包的服务。从而极大的提高了下包的速度。
+>
+> **镜像（Mirroring）** 是一种文件存储形式，一个磁盘上的数据在另一个磁盘上存在一个完全相同的副本即为镜像。
+
+- **国内用户** → 从国外服务器下包 → **国外 npm 官方服务器**
+- **国内用户** → 从国内服务器下包 → **国内淘宝npm镜像服务器** →(定期同步)→ **国外 npm 官方服务器**
+
+下包的镜像源，指的就是**下包的服务器地址**。
+
+```bash
+# 查看当前的下包镜像源
+npm config get registry
+
+# 将下包的镜像源切换为淘宝镜像源
+npm config set registry=https://registry.npmmirror.com/
+
+# 检查镜像源是否下载成功
+npm config get registry
+```
+
+::: warning 注意
+目前（2024年起）淘宝已启用新域名：**https://registry.npmmirror.com/**  
+原 `registry.npm.taobao.org` 已逐步停用，请优先使用新地址。
+:::
+
+#### nrm插件
+
+为了更方便的切换下包的镜像源，我们可以安装 **nrm** 这个小工具，利用 nrm 提供的终端命令，可以快速查看和切换下包的镜像源。
+
+```bash
+# 通过 npm 包管理器，将 nrm 安装为全局可用的工具
+npm i nrm -g
+
+# 查看所有可用的镜像源
+nrm ls
+
+# 将下包的镜像源切换为 taobao 镜像
+nrm use taobao
+```
 
 ### 包的分类
 
+#### 项目包
+
+那些被安装到**项目的 `node_modules` 目录**中的包，都是**项目包**。
+
+项目包又分为两类，分别是：
+
+- **开发依赖包**（被记录到 `devDependencies` 节点中的包，只在开发期间会用到）
+- **核心依赖包**（被记录到 `dependencies` 节点中的包，在开发期间和项目上线之后都会用到）
+
+```bash
+npm i 包名 -D    # 开发依赖包（会被记录到 devDependencies 节点下）
+npm i 包名       # 核心依赖包（会被记录到 dependencies 节点下）
+```
+
+#### 全局包
+
+在执行 `npm install` 命令时，如果提供了 `-g` 参数，则会把包安装为**全局包**。
+
+全局包会被安装到：  
+`C:\Users\用户目录\AppData\Roaming\npm\node_modules` 目录下。（Windows 系统路径示例）
+
+```bash
+npm i 包名 -g        # 全局安装指定的包
+npm uninstall 包名 -g # 卸载全局安装的包
+```
+
+::: warning 注意
+
+1. 只有**工具性质的包**，才有全局安装的必要性。因为它们提供了好用的终端命令。  
+     例如：`nodemon`, `eslint`, `create-react-app`, `vue-cli`, `typescript (tsc)` 等。
+2. 判断某个包是否需要全局安装后才能使用，可以**参考官方提供的使用说明**即可。
+
+:::
+
 ### 规范的包结构
+
+一个规范的包，它的组成结构，必须符合以下 3 点要求：
+
+1. 包必须以**单独的目录**而存在
+2. 包的顶级目录下要必须包含 **package.json** 这个包管理配置文件
+3. **package.json** 中必须包含 **name**, **version**, **main** 这三个属性，分别代表**包的名字、版本号、包的入口**。
 
 ### 发布包 – 开发属于自己的包
 
