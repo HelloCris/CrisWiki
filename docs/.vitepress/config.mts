@@ -7,7 +7,22 @@ export default defineConfig({
   title: "Cris Wiki",
   description: "Cris Wiki -- 一个半路出家的前端开发的学习笔记",
   lastUpdated: true,
-  head: [["link", { rel: "icon", href: "/favicon.ico" }]],
+  head: [
+    ["link", { rel: "icon", href: "/favicon.ico" }],
+    ["meta", { property: "og:title", content: "Cris Wiki" }],
+    [
+      "meta",
+      {
+        property: "og:description",
+        content: "一个半路出家的前端开发的学习笔记",
+      },
+    ],
+    ["meta", { property: "og:image", content: "/logo.png" }],
+    ["meta", { property: "og:url", content: "https://hellocris.github.io/" }],
+    ["meta", { property: "og:type", content: "website" }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:image", content: "/logo.png" }],
+  ],
   locales: {
     root: {
       label: "简体中文",
