@@ -19,18 +19,13 @@ export default defineConfig({
     ],
     [
       "meta",
-      { property: "og:image", content: "https://hellocris.github.io/logo.png" },
-    ],
-    ["meta", { property: "og:url", content: "https://hellocris.github.io/" }],
-    ["meta", { property: "og:type", content: "website" }],
-    ["meta", { name: "twitter:card", content: "summary_large_image" }],
-    [
-      "meta",
       {
-        name: "twitter:image",
+        property: "og:image",
         content: "https://hellocris.github.io/logo.png",
       },
     ],
+    ["meta", { property: "og:url", content: "https://hellocris.github.io/" }],
+    ["meta", { property: "og:type", content: "website" }],
   ],
   locales: {
     root: {
