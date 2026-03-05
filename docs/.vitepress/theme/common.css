@@ -38,6 +38,9 @@
   color: #000000;
   text-decoration: underline;
 }
+html.dark .content .main a {
+  color: #ffffff;
+}
 
 /* 取消 _profile_who-is-cris 标题的编号 */
 .content ._profile_who-is-cris h2::before {
