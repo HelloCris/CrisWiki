@@ -448,7 +448,7 @@ background: [background-color] [background-image] [background-repeat]
 | `background-origin`     | 背景绘制起点（`border-box`, `padding-box`, `content-box`）         | `padding-box`       |
 | `background-clip`       | 背景绘制区域（`border-box`, `padding-box`, `content-box`, `text`） | `border-box`        |
 
-::: warning 注意
+::: warning ⚠️ 注意
 
 1. `background-size` 必须紧跟在 `background-position` 后面，并用 / 分隔。
 2. `background-origin` 和 `background-clip` 不能直接在标准 `background` 简写中使用（某些浏览器可能支持，但不推荐）。建议单独声明。
