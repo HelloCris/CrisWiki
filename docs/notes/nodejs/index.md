@@ -286,7 +286,7 @@ const http = require("http");
 
 同样的道理，在一台电脑中，可以运行成百上千个 web 服务。每个 web 服务都对应一个唯一的端口号。客户端发送过来的网络请求，通过端口号，可以被准确地交给**对应的 web 服务**进行处理。
 
-<img src="./serverPort.webp" alt="serverPort" style="max-width: 500px;" />
+<img src="./serverPort.webp" alt="serverPort" class="restrict-pic-on-pc" />
 
 ::: warning ⚠️ 注意
 
@@ -590,7 +590,11 @@ module.exports.age = "22";
 - **node_modules 文件夹**用来存放所有已安装到项目中的包。`require()` 导入第三方包时，就是从这个目录中查找并加载包。
 - **package-lock.json 配置文件**用来记录 `node_modules` 目录下的每一个包的下载信息，例如包的名字、版本号、下载地址等。
 
-> ⚠️ **注意：** 程序员不要手动修改 `node_modules` 或 `package-lock.json` 文件中的任何代码，npm 包管理工具会自动维护它们。
+::: warning ⚠️ 注意
+
+> 程序员不要手动修改 `node_modules` 或 `package-lock.json` 文件中的任何代码，npm 包管理工具会自动维护它们。
+
+:::
 
 ---
 
@@ -600,7 +604,11 @@ module.exports.age = "22";
 npm i moment@2.22.2
 ```
 
-> 💡 注：`npm i` 是 `npm install` 的简写形式，功能完全相同。
+::: warning ⚠️ 注意
+
+> `npm i` 是 `npm install` 的简写形式，功能完全相同。
+
+:::
 
 ---
 
@@ -623,7 +631,11 @@ npm 规定，在**项目根目录**中，**必须**提供一个叫做 **package.
 
 在**项目根目录**中，创建一个叫做 **package.json** 的配置文件，即可用来记录项目中安装了哪些包。从而方便剔除 `node_modules` 目录之后，在团队成员之间共享项目的源代码。
 
-> **注意：** 在项目开发中，一定要把 `node_modules` 文件夹，添加到 `.gitignore` 忽略文件中。
+::: warning ⚠️ 注意
+
+> 在项目开发中，一定要把 `node_modules` 文件夹，添加到 `.gitignore` 忽略文件中。
+
+:::
 
 npm 包管理工具提供了一个**快捷命令**，可以在**执行命令时所处的目录中**，快速创建 `package.json` 这个包管理配置文件：
 

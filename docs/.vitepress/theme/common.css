@@ -46,3 +46,10 @@ html.dark .content .main a {
 .content ._profile_who-is-cris h2::before {
   display: none;
 }
+
+/* 屏幕宽度大于1000时限制图片最大宽度 */
+@media (min-width: 1000px) {
+  .restrict-pic-on-pc {
+    max-width: 500px;
+  }
+}
