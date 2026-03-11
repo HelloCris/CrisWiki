@@ -75,13 +75,13 @@ git commit -m "描述本次修改"
 
 ## 常用钩子(Git Hooks)
 
-| 钩子（Hook）    | 触发时机                                  | 典型用途                                                                      | 能否阻止操作？                 |
-| --------------- | ----------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------ |
-| `pre-commit`    | `git commit` 之前                         | - 自动格式化 `.md`/`.vue`/`.js`<br>- 运行 ESLint/Prettier<br>- 检查敏感内容   | ✅ 是（退出码非 0 则阻止提交） |
-| `commit-msg`    | 提交信息写好后、提交完成前                | - 校验 commit message 格式（如 Conventional Commits）<br>- 强制包含 Jira 编号 | ✅ 是（可拒绝不规范提交）      |
-| `pre-push`      | `git push` 之前                           | - 运行完整构建（`npm run build`）<br>- 执行集成测试<br>- 防止直接推送到主分支 | ✅ 是（可阻止推送）            |
-| `post-merge`    | `git pull` 或 `git merge` 成功后          | - 检测 `package.json` 变更并自动 `npm install`<br>- 更新本地配置              | ❌ 否（仅通知或辅助操作）      |
-| `post-checkout` | `git checkout <branch>` 或 `git clone` 后 | - 根据分支切换环境配置（如 `.env`）<br>- 初始化本地开发资源                   | ❌ 否                          |
+| 钩子（Hook）    | 触发时机                                  | 典型用途                                                                      | 能否阻止操作？         |
+| --------------- | ----------------------------------------- | ----------------------------------------------------------------------------- | ---------------------- |
+| `pre-commit`    | `git commit` 之前                         | - 自动格式化 `.md`/`.vue`/`.js`<br>- 运行 ESLint/Prettier<br>- 检查敏感内容   | 是（退出码非0即阻止）  |
+| `commit-msg`    | 提交信息写好后、提交完成前                | - 校验 commit message 格式（如 Conventional Commits）<br>- 强制包含 Jira 编号 | 是（可拒绝不规范提交） |
+| `pre-push`      | `git push` 之前                           | - 运行完整构建（`npm run build`）<br>- 执行集成测试<br>- 防止直接推送到主分支 | 是（可阻止推送）       |
+| `post-merge`    | `git pull` 或 `git merge` 成功后          | - 检测 `package.json` 变更并自动 `npm install`<br>- 更新本地配置              | 否（仅通知或辅助操作） |
+| `post-checkout` | `git checkout <branch>` 或 `git clone` 后 | - 根据分支切换环境配置（如 `.env`）<br>- 初始化本地开发资源                   | 否                     |
 
 ## GitHub
 

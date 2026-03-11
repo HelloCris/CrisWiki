@@ -309,7 +309,7 @@ column.addEventListener("drop", (e) => {
 });
 ```
 
-### 地理定位 Geolocation
+### 地理定位Geolocation
 
 通过 `navigator.geolocation` 对象提供两个主要方法：
 
@@ -541,7 +541,7 @@ self.close(); // Worker 主动退出
 
 ## web存储
 
-### **`localStorage`** 和 **`sessionStorage`**
+### `localStorage`和`sessionStorage`
 
 | 要点             | 说明                                             |
 | ---------------- | ------------------------------------------------ |
@@ -582,7 +582,7 @@ self.close(); // Worker 主动退出
 
 :::
 
-#### 事件监听：`storage` 事件
+#### 事件监听：`storage`事件
 
 当**其他标签页**修改了 storage 数据时，当前页面可监听变化：
 
@@ -609,8 +609,8 @@ window.addEventListener("storage", (e) => {
 
 ## 图形与动画
 
-### Canvas 绘图 【todo】
+### Canvas绘图【todo】
 
-## PWA 技术
+## PWA技术
 
-### Service Worker 【todo】
+### Service Worker【todo】
