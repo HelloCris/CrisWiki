@@ -1,6 +1,6 @@
 # Node.js
 
-## 初识 Node.js
+## 初识Node.js
 
 ### 是什么
 
@@ -20,14 +20,14 @@ Node.js官网地址：[https://nodejs.org/en](https://nodejs.org/en)
 
 ### 可以做什么
 
-1. 基于 [Express 框架](http://www.expressjs.com.cn/)，可以快速构建 Web 应用
+1. 基于 [Express框架](http://www.Expressjs.com.cn/)，可以快速构建 Web 应用
 2. 基于 [Electron 框架](https://electronjs.org/)，可以构建跨平台的桌面应用
 3. 基于 [restify 框架](http://restify.com/)，可以快速构建 API 接口项目
 4. 读写和操作数据库、创建实用的命令行工具辅助前端开发、etc...
 
 ### 学习路径
 
-> JavaScript 基础语法 + Node.js 内置 API 模块（fs、path、http等）+ 第三方 API 模块（express、mysql 等）
+> JavaScript 基础语法 + Node.js 内置 API 模块（fs、path、http等）+ 第三方 API 模块（Express、mysql 等）
 
 ### 环境的安装
 
@@ -258,7 +258,7 @@ const http = require("http");
 
 ### 服务器相关概念
 
-#### IP 地址
+#### IP地址
 
 **IP 地址**就是互联网上每台计算机的唯一地址，因此 IP 地址具有唯一性。如果把“个人电脑”比作“一台电话”，那么“IP 地址”就相当于“电话号码”，只有在知道对方 IP 地址的前提下，才能与对应的电脑之间进行数据通信。
 
@@ -398,7 +398,7 @@ res.setHeader("Content-Type", "text/html; charset=utf-8");
 
 ### 向外共享模块作用域中的成员
 
-#### module 对象
+#### module对象
 
 在每个 `.js` 自定义模块中都有一个 `module` 对象，它里面**存储了和当前模块有关的信息**，打印如下：
 
@@ -435,12 +435,12 @@ Module {
 - `filename: '...\\03.module对象.js'` → 当前模块文件的绝对路径。
 - `paths: [...]` → Node.js 查找模块时的搜索路径列表（从当前目录逐级向上查找 `node_modules`）。
 
-#### module.export 对象
+#### module.export对象
 
 在自定义模块中，可以使用 `module.exports` 对象，将模块内的成员共享出去，供外界使用。  
 外界用 `require()` 方法导入自定义模块时，得到的就是 `module.exports` 所指向的对象。
 
-#### export 对象
+#### export对象
 
 由于 `module.exports` 单词写起来比较复杂，为了简化向外共享成员的代码，Node 提供了 `exports` 对象。默认情况下，`exports` 和 `module.exports` 指向同一个对象。最终共享的结果，还是以 `module.exports` 指向的对象为准。
 
@@ -471,7 +471,7 @@ exports = {
 };
 ```
 
-#### module.export 和 export 的误区
+#### module.export和export的误区
 
 **时刻谨记，`require()` 模块时，得到的永远是 `module.exports` 指向的对象：**
 
@@ -773,27 +773,337 @@ npm uninstall 包名 -g # 卸载全局安装的包
 2. 包的顶级目录下要必须包含 **package.json** 这个包管理配置文件
 3. **package.json** 中必须包含 **name**, **version**, **main** 这三个属性，分别代表**包的名字、版本号、包的入口**。
 
-### 发布包 – 开发属于自己的包
+### 发布包-开发属于自己的包
+
+#### 本地创建包
+
+1. 新建 cris-tools 文件夹, 作为包的根目录
+2. 在 cris-tools 文件夹中, 新建如下三个文件:
+   - package.json (包管理配置文件)
+   - index.js (包的入口文件)
+   - README.md (包的说明文档)
+
+3. 初始化 package.json 文件
+
+```json
+{
+  "name": "cris-tools",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "提供了格式化时间, HTMLEscape的功能",
+  "keywords": ["cris", "dateFormat", "escape"],
+  "license": "ISC"
+}
+```
+
+#### 远程包发布/删除
+
+::: info 1. 注册 npm 账号
+
+1. 访问 https://www.npmjs.com/ 网站, 点击 sign up 按钮, 进入注册用户界面
+2. 填写账号相关的信息: Full Name、Public Email、Username、Password
+3. 点击 Create an Account 按钮, 注册账号
+4. 登录邮箱, 点击验证链接, 进行账号的验证
+
+:::
+
+---
+
+::: info 2. 登录 npm 账号
+
+npm 账号注册完成后, 可以在终端中执行 `npm login` 命令, 依次输入用户名、密码、邮箱后, 即可登录成功。
+
+```bash
+C:\Users>npm login
+Username: lih314
+Password:
+Email: (this IS public) front@itcast.cn
+Logged in as lih314 on https://registry.npmjs.org/.
+```
+
+::: warning ⚠️ 注意
+
+> 在运行 `npm login` 命令之前, 必须先把下包的服务器地址切换为 npm 的官方服务器。否则会导致发布包失败!
+
+:::
+
+---
+
+::: info 3. 把包发布到 npm 上
+
+将终端切换到包的根目录之后, 运行 `npm publish` 命令, 即可将包发布到 npm 上 (注意: 包名不能雷同)。
+
+```bash
+C:\Users\cris\Desktop\cris-tools>npm publish
+npm notice
+npm notice package: cris-tools@1.0.0
+npm notice === Tarball Contents ===
+npm notice 677B src/dateFormat.js
+npm notice 741B src/htmlEscape.js
+npm notice 349B index.js
+npm notice 229B package.json
+npm notice 816B README.md
+npm notice === Tarball Details ===
+npm notice name:          cris-tools
+npm notice version:       1.0.1
+npm notice package size:  1.4 kB
+npm notice unpacked size: 2.8 kB
+npm notice shasum:        4683fd9e9f14e8a8656a7ebfa46c59e576525dcf
+npm notice integrity:     sha512-bOmS3ZPe2vxvAu[...]g2MNxaJLYePFA==
+npm notice total files:   5
+npm notice
++ cris-tools@1.0.1
+
+```
+
+:::
+
+---
+
+::: info 4. 删除已发布的包
+
+运行 `npm unpublish 包名 --force` 命令, 即可从 npm 删除已发布的包。
+
+```bash
+C:\Users\cris\Desktop\cris-tools>npm unpublish cris-tools --force
+npm WARN using --force I sure hope you know what you are doing.
+- cris-tools
+```
+
+::: warning ⚠️ 注意
+
+1. `npm unpublish` 命令只能删除 **72 小时以内**发布的包
+2. `npm unpublish` 删除的包, 在 **24 小时内**不允许重复发布
+3. 发布包的时候要慎重, **尽量不要往 npm 上发布没有意义的包!**
+
+:::
 
 ## 模块的加载机制
 
-## express
+### 优先从缓存中加载
 
-### express 简介
+模块在第一次加载后会被缓存。这也意味着多次调用 require() 不会导致模块的代码被执行多次。
 
-### express 的基本使用
+::: warning ⚠️ 注意
 
-### express 托管静态资源
+不论是内置模块、用户自定义模块、还是第三方模块，它们都会优先从缓存中加载，从而提高模块的加载效率。
 
-### nodemon 工具
+:::
 
-### express 路由
+### 内置模块的加载机制
+
+内置模块是由 Node.js 官方提供的模块，内置模块的加载优先级最高。
+
+例如，require('fs') 始终返回内置的 fs 模块，即使在 node_modules 目录下有名字相同的包也叫做 fs。
+
+### 自定义模块的加载机制
+
+使用 require() 加载自定义模块时，必须指定以 / 或 ./ 开头的路径标识符。在加载自定义模块时，如果没有指定 / 或 ./ 这样的路径标识符，则 node 会把它当作内置模块或第三方模块进行加载。
+
+同时，在使用 require() 导入自定义模块时，如果省略了文件的扩展名，则 Node.js 会按顺序分别尝试加载以下的文件：
+
+1. 按照确切的文件名进行加载
+2. 补全 .js 扩展名进行加载
+3. 补全 .json 扩展名进行加载
+4. 补全 .node 扩展名进行加载
+5. 加载失败，终端报错
+
+### 第三方模块的加载机制
+
+如果传递给 require() 的模块标识符不是一个内置模块，也没有以 ‘./’ 或 ‘../’ 开头，则 Node.js 会从当前模块的父目录开始，尝试从 /node_modules 文件夹中加载第三方模块。
+
+如果没有找到对应的第三方模块，则移动到再上一层父目录中，进行加载，直到文件系统的根目录。
+
+例如，假设在 'C:\Users\cris\project\foo.js' 文件里调用了 require('tools')，则 Node.js 会按以下顺序查找：
+
+1. C:\Users\cris\project\node_modules\tools
+2. C:\Users\cris\node_modules\tools
+3. C:\Users\node_modules\tools
+4. C:\node_modules\tools
+
+### 目录作为模块的加载机制
+
+当把目录作为模块标识符，传递给 require() 进行加载的时候，有三种加载方式：
+
+1. 在被加载的目录下查找一个叫做 package.json 的文件，并寻找 main 属性，作为 require() 加载的入口
+2. 如果目录里没有 package.json 文件，或者 main 入口不存在或无法解析，则 Node.js 将会试图加载目录下的 index.js 文件。
+3. 如果以上两步都失败了，则 Node.js 会在终端打印错误消息，报告模块的缺失：Error: Cannot find module 'xxx'
+
+## Express
+
+### Express简介
+
+#### 什么是Express
+
+官方给出的概念：Express是基于 Node.js 平台，快速、开放、极简的 Web 开发框架。  
+通俗理解：Express的作用和 Node.js 内置的 http 模块类似，是专门用来创建 Web 服务器的。  
+Express的本质：就是一个 npm 上的第三方包，提供了快速创建 Web 服务器的便捷方法。  
+Express的中文官网：[http://www.Expressjs.com.cn/](http://www.Expressjs.com.cn/)
+
+#### Express能做什么
+
+对于前端程序员来说，最常见的两种服务器，分别是：
+
+- Web 网站服务器：专门对外提供 Web 网页资源的服务器。
+- API 接口服务器：专门对外提供 API 接口的服务器。
+
+使用 Express，我们可以方便、快速的创建 Web 网站的服务器或 API 接口的服务器。
+
+### Express的基本使用
+
+#### 安装
+
+在项目所处的目录中，运行如下的终端命令，即可将 Express安装到项目中使用：
+
+```bash
+npm i Express@4.17.1
+```
+
+#### 创建Web服务器
+
+```js
+// 1. 导入 Express
+const Express = require("Express");
+
+// 2. 创建 web 服务器
+const app = Express();
+
+// 3. 调用 app.listen(端口号, 启动成功后的回调函数)，启动服务器
+app.listen(80, () => {
+  console.log("Expressserver running at http://127.0.0.1");
+});
+```
+
+#### 监听GET请求
+
+通过 `app.get()` 方法，可以监听客户端的 GET 请求，具体的语法格式如下：
+
+```js
+// 参数1: 客户端请求的 URL 地址
+// 参数2: 请求对应的处理函数
+// req: 请求对象 (包含了与请求相关的属性与方法)
+// res: 响应对象 (包含了与响应相关的属性与方法)
+app.get("请求URL", function (req, res) {
+  /*处理函数*/
+});
+```
+
+#### 监听POST请求
+
+通过 `app.post()` 方法，可以监听客户端的 POST 请求，具体的语法格式如下：
+
+```js
+// 参数1: 客户端请求的 URL 地址
+// 参数2: 请求对应的处理函数
+// req: 请求对象 (包含了与请求相关的属性与方法)
+// res: 响应对象 (包含了与响应相关的属性与方法)
+app.post("请求URL", function (req, res) {
+  /*处理函数*/
+});
+```
+
+#### 把内容响应给客户端
+
+通过 `res.send()` 方法，可以把处理好的内容，发送给客户端：
+
+```js
+app.get("/user", (req, res) => {
+  // 向客户端发送 JSON 对象
+  res.send({ name: "zs", age: 20, gender: "男" });
+});
+
+app.post("/user", (req, res) => {
+  // 向客户端发送文本内容
+  res.send("请求成功");
+});
+```
+
+#### 获取URL的查询参数
+
+通过 `req.query` 对象，可以访问到客户端通过 **查询字符串** 的形式，发送到服务器的参数：
+
+```js
+app.get("/", (req, res) => {
+  // req.query 默认是一个空对象
+  // 客户端使用 ?name=zs&age=20 这种查询字符串形式，发送到服务器的参数，
+  // 可以通过 req.query 对象访问到，例如：
+  // req.query.name   req.query.age
+  console.log(req.query);
+});
+```
+
+#### 获取URL的动态参数
+
+通过 `req.params` 对象，可以访问到 URL 中，通过 `:` 匹配到的 **动态参数**：
+
+```js
+// URL 地址中，可以通过 :参数名 的形式，匹配动态参数值
+app.get("/user/:id", (req, res) => {
+  // req.params 默认是一个空对象
+  // 里面存放着通过 : 动态匹配到的参数值
+  console.log(req.params);
+});
+```
+
+> req.params中的动态参数可以是多个，例如：/user/:id/:name
+
+### Express托管静态资源
+
+#### express.static()
+
+express 提供了一个非常好用的函数，叫做 `express.static()`，通过它，我们可以非常方便地创建一个静态资源服务器。  
+例如，通过如下代码就可以将 public 目录下的图片、CSS 文件、JavaScript 文件对外开放访问了：
+
+```js
+app.use(express.static("public"));
+```
+
+现在，你就可以访问 public 目录中的所有文件了：
+
+- http://localhost:3000/images/bg.jpg
+- http://localhost:3000/css/style.css
+- http://localhost:3000/js/login.js
+
+::: warning ⚠️ 注意
+
+Express 在指定的静态目录中查找文件，并对外提供资源的访问路径。因此，存放静态文件的目录名不会出现在 URL 中。
+
+:::
+
+#### 托管多个静态资源目录
+
+如果要托管多个静态资源目录，请多次调用 `express.static()` 函数：
+
+```js
+app.use(express.static("public"));
+app.use(express.static("files"));
+```
+
+访问静态资源文件时，`express.static()` 函数会根据目录的添加顺序查找所需的文件。
+
+#### 挂载路径前缀
+
+如果希望在托管的静态资源访问路径之前，挂载路径前缀，则可以使用如下的方式：
+
+```js
+app.use("/public", express.static("public"));
+```
+
+现在，你就可以通过带有 `/public` 前缀地址来访问 public 目录中的文件了：
+
+- http://localhost:3000/public/images/kitten.jpg
+- http://localhost:3000/public/css/style.css
+- http://localhost:3000/public/js/app.js
+
+### nodemon工具
+
+### Express路由
 
 #### 路由的概念
 
 #### 路由的使用
 
-### express 中间件
+### Express中间件
 
 #### 中间件的概念与格式
 
@@ -803,7 +1113,7 @@ npm uninstall 包名 -g # 卸载全局安装的包
 
 #### 自定义中间件
 
-### 使用 express 写接口
+### 使用Express写接口
 
 #### 基本流程
 
@@ -817,29 +1127,29 @@ npm uninstall 包名 -g # 卸载全局安装的包
 
 ### 安装并配置 MySQL
 
-### MySQL Workbench 使用
+### MySQL Workbench使用
 
-### 使用 SQL 管理数据库
+### 使用SQL管理数据库
 
 #### 什么是 SQL
 
 #### SQL 的增删改查语句
 
-#### SQL 的 where、and 和 or
+#### SQL的where、and和or
 
-#### SQL 排序 order by
+#### SQL排序order by
 
-#### count 函数和 as 关键字
+#### count函数和as关键字
 
-### nodejs 中怎么使用 MySQL 模块
+### nodejs中怎么使用MySQL模块
 
-#### 引入 MySQL 模块
+#### 引入MySQL模块
 
 #### 增删改查
 
 ## 前后端的身份认证
 
-### web 开发模式
+### web开发模式
 
 ### 身份认证
 
@@ -847,10 +1157,10 @@ npm uninstall 包名 -g # 卸载全局安装的包
 
 #### 概念
 
-#### express-session 中间件
+#### Express-session中间件
 
 ### jwt
 
 #### JWT
 
-#### JWT 在 express 中的使用
+#### JWT在Express中的使用
