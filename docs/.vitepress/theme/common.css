@@ -53,3 +53,18 @@ html.dark .content .main a {
     max-width: 500px;
   }
 }
+
+.container .aside .outline-marker {
+  font-weight: bold;
+  width: 6px;
+}
+
+.container .aside .outline-link:hover, 
+.container .aside .outline-link.active {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.container .aside .outline-link.active {
+  background-color: #999f92;
+}
