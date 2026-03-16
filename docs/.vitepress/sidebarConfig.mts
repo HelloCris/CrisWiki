@@ -57,10 +57,15 @@ export const sidebarConfig = [
       },
       {
         text: "Node.js",
-        link: "/notes/nodejs/index.md",
+        collapsed: true,
+        items: [
+          { text: "Node.js基础", link: "/notes/nodejs/index.md" },
+          { text: "Express", link: "/notes/nodejs/express.md" },
+          { text: "数据库", link: "/notes/nodejs/database.md" },
+        ],
       },
       {
-        text: "其他",
+        text: "IT基础知识",
         collapsed: true,
         items: [
           { text: "Linux", link: "/notes/others/linux.md" },
