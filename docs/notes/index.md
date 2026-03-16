@@ -28,7 +28,9 @@
 
 ## TypeScript
 
-### [TypeScript](ts/index.md)
+### [TypeScript基础](ts/base.md)
+
+### [TypeScript高级类型](ts/advancedTypes.md)
 
 ## Node.js
 

@@ -49,7 +49,11 @@ export const sidebarConfig = [
       },
       {
         text: "TypeScript",
-        link: "/notes/ts/index.md",
+        collapsed: true,
+        items: [
+          { text: "TypeScript基础", link: "/notes/ts/base.md" },
+          { text: "TypeScript高级类型", link: "/notes/ts/advancedTypes.md" },
+        ],
       },
       {
         text: "Node.js",

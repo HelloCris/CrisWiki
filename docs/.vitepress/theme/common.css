@@ -54,6 +54,7 @@ html.dark .content .main a {
   }
 }
 
+/* 调整侧边栏标题的字体大小和粗细 */
 .container .aside .outline-marker {
   font-weight: bold;
   width: 6px;
