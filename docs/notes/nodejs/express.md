@@ -1,26 +1,18 @@
 # Express
 
-## Express简介
+## 简介
 
-### 什么是Express
-
-官方给出的概念：Express是基于 Node.js 平台，快速、开放、极简的 Web 开发框架。  
-通俗理解：Express的作用和 Node.js 内置的 http 模块类似，是专门用来创建 Web 服务器的。  
-Express的本质：就是一个 npm 上的第三方包，提供了快速创建 Web 服务器的便捷方法。  
-Express的中文官网：[http://www.Expressjs.com.cn/](http://www.Expressjs.com.cn/)
-
-### Express能做什么
+Express是基于 Node.js 平台，快速、开放、极简的 Web 开发框架。  
+Express的中文官网：[www.Expressjs.com.cn](http://www.expressjs.com.cn/)
 
 对于前端程序员来说，最常见的两种服务器，分别是：
 
 - Web 网站服务器：专门对外提供 Web 网页资源的服务器。
 - API 接口服务器：专门对外提供 API 接口的服务器。
 
-使用 Express，我们可以方便、快速的创建 Web 网站的服务器或 API 接口的服务器。
+## 基本使用
 
-## Express的基本使用
-
-### 安装
+**1. 安装**
 
 在项目所处的目录中，运行如下的终端命令，即可将 Express安装到项目中使用：
 
@@ -28,7 +20,9 @@ Express的中文官网：[http://www.Expressjs.com.cn/](http://www.Expressjs.com
 npm i Express@4.17.1
 ```
 
-### 创建Web服务器
+---
+
+**2. 创建Web服务器**
 
 ```js
 // 1. 导入 Express
@@ -43,7 +37,9 @@ app.listen(80, () => {
 });
 ```
 
-### 监听GET请求
+---
+
+**3. 监听GET请求**
 
 通过 `app.get()` 方法，可以监听客户端的 GET 请求，具体的语法格式如下：
 
@@ -57,7 +53,9 @@ app.get("请求URL", function (req, res) {
 });
 ```
 
-### 监听POST请求
+---
+
+**4. 监听POST请求**
 
 通过 `app.post()` 方法，可以监听客户端的 POST 请求，具体的语法格式如下：
 
@@ -71,7 +69,9 @@ app.post("请求URL", function (req, res) {
 });
 ```
 
-### 把内容响应给客户端
+---
+
+**5. 把内容响应给客户端**
 
 通过 `res.send()` 方法，可以把处理好的内容，发送给客户端：
 
@@ -87,7 +87,9 @@ app.post("/user", (req, res) => {
 });
 ```
 
-### 获取URL的查询参数
+---
+
+**6. 获取URL的查询参数**
 
 通过 `req.query` 对象，可以访问到客户端通过 **查询字符串** 的形式，发送到服务器的参数：
 
@@ -101,7 +103,9 @@ app.get("/", (req, res) => {
 });
 ```
 
-### 获取URL的动态参数
+---
+
+**7. 获取URL的动态参数**
 
 通过 `req.params` 对象，可以访问到 URL 中，通过 `:` 匹配到的 **动态参数**：
 
@@ -116,11 +120,11 @@ app.get("/user/:id", (req, res) => {
 
 > req.params中的动态参数可以是多个，例如：/user/:id/:name
 
-## Express托管静态资源
+## 托管静态资源
 
 ### express.static()
 
-express 提供了一个非常好用的函数，叫做 `express.static()`，通过它，我们可以非常方便地创建一个静态资源服务器。  
+`express.static()` 可以创建一个静态资源服务器。  
 例如，通过如下代码就可以将 public 目录下的图片、CSS 文件、JavaScript 文件对外开放访问了：
 
 ```js
@@ -139,7 +143,7 @@ Express 在指定的静态目录中查找文件，并对外提供资源的访问
 
 :::
 
-### 托管多个静态资源目录
+::: info 托管多个静态资源目录
 
 如果要托管多个静态资源目录，请多次调用 `express.static()` 函数：
 
@@ -150,7 +154,9 @@ app.use(express.static("files"));
 
 访问静态资源文件时，`express.static()` 函数会根据目录的添加顺序查找所需的文件。
 
-### 挂载路径前缀
+:::
+
+::: info 挂载路径前缀
 
 如果希望在托管的静态资源访问路径之前，挂载路径前缀，则可以使用如下的方式：
 
@@ -163,6 +169,8 @@ app.use("/public", express.static("public"));
 - http://localhost:3000/public/images/kitten.jpg
 - http://localhost:3000/public/css/style.css
 - http://localhost:3000/public/js/app.js
+
+:::
 
 ## nodemon工具
 
@@ -192,9 +200,9 @@ node app.js
 nodemon app.js
 ```
 
-## Express路由
+## 路由
 
-### 路由的概念
+### 概念
 
 在 Express 中, 路由指的是**客户端的请求与服务器处理函数之间的映射关系**。
 
@@ -233,7 +241,7 @@ app.post("/", function (req, res) {
 
 :::
 
-### 路由的使用
+### 路由使用
 
 **1. 模块化路由**
 
@@ -290,9 +298,9 @@ app.use()函数的作用就是注册全局中间件。
 5 app.use('/api', userRouter)
 ```
 
-## Express中间件
+## 中间件
 
-### 中间件的概念与格式
+### 概念与格式
 
 ![中间件的概念与格式](asset/middleware01.webp)
 ![中间件的概念与格式](asset/middleware02.webp)
@@ -429,7 +437,119 @@ app.get("/", [mw1, mw2], (req, res) => {
 
 ### 中间件的分类
 
+Express 官方把常见的中间件用法，分成了 **5** 大类，分别是：
+
+1. **应用级别**的中间件
+2. **路由级别**的中间件
+3. **错误级别**的中间件
+4. **Express 内置**的中间件
+5. **第三方**的中间件
+
+**1. 应用级别的中间件**
+
+通过 `app.use()` 或 `app.get()` 或 `app.post()`，绑定到 `app` 实例上的中间件，叫做应用级别的中间件，代码示例如下：
+
+```js
+// 应用级别的中间件 (全局中间件)
+app.use((req, res, next) => {
+  next();
+});
+
+// 应用级别的中间件 (局部中间件)
+app.get("/", mw1, (req, res) => {
+  res.send("Home page.");
+});
+```
+
+---
+
+**2. 路由级别的中间件**
+
+绑定到 `express.Router()` 实例上的中间件，叫做路由级别的中间件。它的用法和应用级别中间件没有任何区别。只不过，应用级别中间件是绑定到 `app` 实例上，路由级别中间件绑定到 `router` 实例上，代码示例如下：
+
+```js
+var app = express();
+var router = express.Router();
+
+// 路由级别的中间件
+router.use(function (req, res, next) {
+  console.log("Time:", Date.now());
+  next();
+});
+
+app.use("/", router);
+```
+
+---
+
+**3. 错误级别的中间件**
+
+错误级别中间件的**作用**：专门用来捕获整个项目中发生的异常错误，从而防止项目异常崩溃的问题。
+
+**格式**：错误级别中间件的 function 处理函数中，必须有 **4 个形参**，形参顺序从前到后，分别是 `(err, req, res, next)`。
+
+```js
+app.get("/", function (req, res) {
+  // 1. 路由
+  throw new Error("服务器内部发生了错误!"); // 1.1 抛出一个自定义的错误
+  res.send("Home Page.");
+});
+
+app.use(function (err, req, res, next) {
+  // 2. 错误级别的中间件
+  console.log("发生了错误: " + err.message); // 2.1 在服务器打印错误消息
+  res.send("Error! " + err.message); // 2.2 向客户端响应错误相关的内容
+});
+```
+
+::: warning ⚠️ 注意
+错误级别的中间件，必须注册在所有路由之后！
+
+:::
+
+---
+
+**4. Express内置的中间件**
+
+自 Express 4.16.0 版本开始，Express 内置了 **3** 个常用的中间件，极大的提高了 Express 项目的开发效率和体验：
+
+1. `express.static` 快速托管静态资源的内置中间件，例如：HTML 文件、图片、CSS 样式等（无兼容性）
+2. `express.json` 解析 JSON 格式的请求体数据（有兼容性，仅在 4.16.0+ 版本中可用）
+3. `express.urlencoded` 解析 URL-encoded 格式的请求体数据（有兼容性，仅在 4.16.0+ 版本中可用）
+
+```js
+// 配置解析 application/json 格式数据的内置中间件
+app.use(express.json());
+// 配置解析 application/x-www-form-urlencoded 格式数据的内置中间件
+app.use(express.urlencoded({ extended: false }));
+```
+
+---
+
+**5. 第三方的中间件**
+
+由第三方开发出来的中间件。
+
+例如：`body-parser`使用步骤：
+
+1. 运行 `npm install body-parser` 安装中间件
+2. 使用 `require` 导入中间件
+3. 调用 `app.use()` 注册并使用中间件
+
+> Express 内置的 `express.urlencoded` 中间件，就是基于 `body-parser` 这个第三方中间件进一步封装出来的。
+
 ### 自定义中间件
+
+自己手动模拟一个类似于 `express.urlencoded` 这样的中间件，来解析 POST 提交到服务器的表单数据。
+
+**实现步骤:**
+
+1. 定义中间件
+2. 监听 req 的 data 事件
+3. 监听 req 的 end 事件
+4. 使用 querystring 模块解析请求体数据
+5. 将解析出来的数据对象挂载为 req.body
+6. 将自定义中间件封装为模块
 
 ## 使用Express写接口
 
@@ -438,3 +558,8 @@ app.get("/", [mw1, mw2], (req, res) => {
 ### 跨域问题
 
 ### JSONP
+
+## 用户身份认证
+
+- [Session](/notes/nodejs/base.md#express-session中间件)
+- [JWT](/notes/nodejs/base.md#jwt在express中的使用)

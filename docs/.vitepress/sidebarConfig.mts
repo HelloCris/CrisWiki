@@ -59,7 +59,7 @@ export const sidebarConfig = [
         text: "Node.js",
         collapsed: true,
         items: [
-          { text: "Node.js基础", link: "/notes/nodejs/index.md" },
+          { text: "Node.js基础", link: "/notes/nodejs/base.md" },
           { text: "Express", link: "/notes/nodejs/express.md" },
           { text: "数据库", link: "/notes/nodejs/database.md" },
         ],
