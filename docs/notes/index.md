@@ -20,6 +20,8 @@
 
 ### [JavaScript基础](js/base.md)
 
+### [DOM](js/dom.md)
+
 ### [JavaScript高级](js/advanced.md)
 
 ### [js模块化](js/module.md)
