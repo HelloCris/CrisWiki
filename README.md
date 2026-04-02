@@ -7,7 +7,7 @@
 ## 项目结构
 
 ```bash
-├── .github/          # Github Actions 配置文件
+├── .github/          # Github Actions
 ├── .vscode/          # VS Code配置文件
 ├── docs/             # 文档源码目录
 │   ├── .vitepress/   # VitePress配置目录
