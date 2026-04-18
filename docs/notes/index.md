@@ -22,11 +22,15 @@
 
 ### [DOM](js/dom.md)
 
+### [BOM](js/bom.md)
+
 ### [JavaScript高级](js/advanced.md)
 
 ### [js模块化](js/module.md)
 
 ### [正则表达式](js/regex.md)
+
+### [JSON](js/json.md)
 
 ## TypeScript
 

@@ -43,9 +43,11 @@ export const sidebarConfig = [
         items: [
           { text: "JavaScript基础", link: "/notes/js/base.md" },
           { text: "DOM", link: "/notes/js/dom.md" },
+          { text: "BOM", link: "/notes/js/bom.md" },
           { text: "JavaScript高级", link: "/notes/js/advanced.md" },
           { text: "js模块化", link: "/notes/js/module.md" },
           { text: "正则表达式", link: "/notes/js/regex.md" },
+          { text: "JSON", link: "/notes/js/json.md" },
         ],
       },
       {
