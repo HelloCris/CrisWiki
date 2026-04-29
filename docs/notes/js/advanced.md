@@ -333,6 +333,139 @@ outer();
 
 ### 闭包
 
+#### 闭包概述
+
+当一个嵌套的内部(子)函数引用了嵌套的外部(父)函数的变量(函数)时, 就产生了闭包
+
+**简单理解：**
+
+- 闭包 = 函数 + 函数能够访问的外部变量
+- 内部函数可以访问外部函数的局部变量
+
+```js
+function outer() {
+  const name = "Tom";
+  function inner() {
+    console.log(name); // inner 可以访问 outer 的变量
+  }
+  return inner;
+}
+const fn = outer();
+fn(); // 输出 'Tom'
+```
+
+::: info 闭包的本质
+
+闭包的实现依赖于 JavaScript 的作用域链机制：
+
+1. 函数在创建时会保存当前的作用域链
+2. 当函数执行时，会创建新的执行上下文
+3. 执行上下文的作用域链 = 当前执行上下文 + 外部函数的作用域链
+4. 即使外部函数已经执行完毕，其变量对象仍然被内部函数引用，不会被垃圾回收
+
+```js
+function outer() {
+  const count = 0; // 外部变量
+  return function () {
+    count++; // 每次调用都会修改外部变量
+    console.log(count);
+  };
+}
+const fn = outer();
+fn(); // 1
+fn(); // 2
+fn(); // 3
+```
+
+:::
+
+::: info 闭包的优势与劣势
+
+**优势：**
+
+- 实现私有变量和数据封装
+- 延续变量生命周期
+- 实现函数式编程特性
+
+**劣势：**
+
+- 占用内存时间长（外部函数变量无法被垃圾回收）
+- 增加内存消耗
+- 使用不当可能导致内存泄漏
+
+:::
+
+#### 闭包的问题
+
+**内存泄漏：**
+
+```js
+function badPractice() {
+  const largeData = new Array(1000000);
+  return function () {
+    console.log(largeData.length);
+  };
+}
+const fn = badPractice();
+// largeData 不会被回收，因为被闭包引用
+fn = null; // 手动解除引用
+```
+
+**this 指向问题：**
+
+```js
+const obj = {
+  name: "obj",
+  getName() {
+    return function () {
+      return this.name; // this 指向 global，不是 obj
+    };
+  },
+};
+console.log(obj.getName()()); // undefined
+// 修正方法
+const obj2 = {
+  name: "obj",
+  getName() {
+    const self = this;
+    return function () {
+      return self.name;
+    };
+  },
+};
+console.log(obj2.getName()()); // 'obj'
+```
+
+#### 经典题目
+
+```js
+// 题目一：循环中的闭包
+for (var i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 0);
+}
+// 输出：3 3 3
+
+// 题目二：解决方案
+for (var i = 0; i < 3; i++) {
+  (function (j) {
+    setTimeout(function () {
+      console.log(j);
+    }, 0);
+  })(i);
+}
+// 输出：0 1 2
+
+// 题目三：let 解决
+for (let i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 0);
+}
+// 输出：0 1 2
+```
+
 ## 面向对象编程 (OOP)
 
 ### 原型与原型链
