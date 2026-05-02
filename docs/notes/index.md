@@ -26,6 +26,8 @@
 
 ### [JavaScript高级](js/advanced.md)
 
+### [ES6 新增特性](js/es6.md)
+
 ### [js模块化](js/module.md)
 
 ### [正则表达式](js/regex.md)
