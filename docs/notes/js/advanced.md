@@ -470,9 +470,439 @@ for (let i = 0; i < 3; i++) {
 
 ### 原型与原型链
 
+#### 原型基本概念
+
+在 JavaScript 中，每个对象都有一个隐式属性 `__proto__`，指向它的原型对象。原型对象也是一个普通对象，同样拥有自己的原型，这样就形成了一条原型链。
+
+- **prototype**：函数特有的属性，指向函数的原型对象
+- **\_\_proto\_\_**：对象隐式原型属性，指向创建该对象的构造函数的 prototype
+- **constructor**：原型对象的属性，指向构造函数本身
+
+```js
+function Person(name) {
+  this.name = name;
+}
+
+Person.prototype.sayHello = function () {
+  console.log(`Hello, I'm ${this.name}`);
+};
+
+const person = new Person("张三");
+
+console.log(person.__proto__ === Person.prototype); // true
+console.log(Person.prototype.constructor === Person); // true
+console.log(person.constructor === Person); // true
+```
+
+#### 原型链
+
+当访问一个对象的属性时，如果对象本身没有该属性，JavaScript 会沿着原型链向上查找，直到找到或者到达 Object.prototype 为止。
+
+**示意图：**
+
+```
+person 实例
+    │
+    │ __proto__
+    ▼
+Person.prototype
+    │
+    │ __proto__
+    ▼
+Object.prototype
+    │
+    │ __proto__
+    ▼
+null
+```
+
+::: info 原型链特性
+
+- **属性查找**：先找自身属性，再找原型属性，原型属性优先级低于自身属性
+- **属性遮蔽**：自身属性会覆盖原型上的同名属性
+- **方法继承**：通过原型链，可以实现方法的复用和共享
+- **原型链终点**：`Object.prototype.__proto__` 为 `null`
+
+:::
+
+`Object.create()` 方法可以显式指定对象的原型。  
+`instanceof` 运算符可以检测对象是否是某个构造函数的实例。
+
 ### 对象创建模式
 
+**方式 1: Object 构造函数模式**
+
+- 套路: 先创建空 Object 对象, 再动态添加属性/方法
+- 适用场景: 起始时不确定对象内部数据
+- 问题: 语句太多
+
+示例:
+
+```js
+// 先创建空 Object 对象
+var p = new Object();
+p = {}; //此时内部数据是不确定的
+// 再动态添加属性/方法
+p.name = "Tom";
+p.age = 12;
+p.setName = function (name) {
+  this.name = name;
+};
+```
+
+**方式 2: 对象字面量模式**
+
+- 套路: 使用{}创建对象, 同时指定属性/方法
+- 适用场景: 起始时对象内部数据是确定的
+- 问题: 如果创建多个对象, 有重复代码
+
+示例:
+
+```js
+var p = {
+  name: "Tom",
+  age: 12,
+  setName: function (name) {
+    this.name = name;
+  },
+};
+```
+
+**方式 3: 工厂模式**
+
+- 套路: 通过工厂函数动态创建对象并返回
+- 适用场景: 需要创建多个对象
+- 问题: 对象没有一个具体的类型, 都是 Object 类型
+
+示例:
+
+```js
+function createPerson(name, age) {
+  //返回一个对象的函数===>工厂函数
+  var obj = {
+    name: name,
+    age: age,
+    setName: function (name) {
+      this.name = name;
+    },
+  };
+  return obj;
+}
+// 创建 2 个人
+var p1 = createPerson("Tom", 12);
+var p2 = createPerson("Bob", 13);
+```
+
+**方式 4: 自定义构造函数模式**
+
+- 套路: 自定义构造函数, 通过 new 创建对象
+- 适用场景: 需要创建多个类型确定的对象
+- 问题: 每个对象都有相同的数据, 浪费内存
+
+示例:
+
+```js
+//定义类型
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+  this.setName = function (name) {
+    this.name = name;
+  };
+}
+var p1 = new Person("Tom", 12);
+```
+
+**方式 5: 构造函数+原型的组合模式**
+
+- 套路: 自定义构造函数, 属性在函数中初始化, 方法添加到原型上
+- 适用场景: 需要创建多个类型确定的对象
+
+示例:
+
+```js
+function Person(name, age) {
+  //在构造函数中只初始化一般函数
+  this.name = name;
+  this.age = age;
+}
+Person.prototype.setName = function (name) {
+  this.name = name;
+};
+```
+
 ### 继承模式
+
+#### 原型链继承
+
+通过将子类的原型指向父类的实例来实现继承。
+
+```js
+function Animal(name) {
+  this.name = name;
+}
+
+Animal.prototype.getName = function () {
+  return this.name;
+};
+
+function Dog(name, breed) {
+  this.breed = breed;
+}
+
+Dog.prototype = new Animal();
+Dog.prototype.constructor = Dog;
+Dog.prototype.bark = function () {
+  console.log("汪汪汪");
+};
+
+const dog = new Dog("旺财", "柯基");
+console.log(dog.name); // '旺财' - 继承自 Animal
+console.log(dog.breed); // '柯基' - 自身属性
+console.log(dog.getName()); // '旺财' - 继承的方法
+dog.bark(); // '汪汪汪'
+```
+
+**缺点**：
+
+- 父类属性如果是引用类型，会被所有子类实例共享
+- 无法向父类构造函数传参
+
+#### 构造函数继承（经典继承）
+
+在子类构造函数内部调用父类构造函数。
+
+```js
+function Animal(name) {
+  this.name = name;
+  this.colors = ["白色", "黑色"];
+}
+
+Animal.prototype.getName = function () {
+  return this.name;
+};
+
+function Dog(name, breed) {
+  Animal.call(this, name);
+  this.breed = breed;
+}
+
+const dog = new Dog("旺财", "柯基");
+
+console.log(dog.name); // '旺财'
+console.log(dog.breed); // '柯基'
+console.log(dog.colors); // ['白色', '黑色']
+
+const dog1 = new Dog("旺财1", "柯基");
+const dog2 = new Dog("旺财2", "金毛");
+
+dog1.colors.push("黄色");
+
+console.log(dog1.colors); // ['白色', '黑色', '黄色']
+console.log(dog2.colors); // ['白色', '黑色'] - 不受影响
+```
+
+**缺点**：
+
+- 方法必须在构造函数内定义，无法复用
+- 父类原型上的方法子类无法访问
+
+#### 组合继承
+
+结合原型链继承和构造函数继承，是最常用的继承方式。
+
+```js
+function Animal(name) {
+  this.name = name;
+  this.colors = ["白色", "黑色"];
+}
+
+Animal.prototype.getName = function () {
+  return this.name;
+};
+
+function Dog(name, breed) {
+  Animal.call(this, name);
+  this.breed = breed;
+}
+
+Dog.prototype = new Animal();
+Dog.prototype.constructor = Dog;
+Dog.prototype.bark = function () {
+  console.log("汪汪汪");
+};
+
+const dog = new Dog("旺财", "柯基");
+
+console.log(dog.name); // '旺财'
+console.log(dog.breed); // '柯基'
+console.log(dog.getName()); // '旺财'
+dog.bark(); // '汪汪汪'
+
+const dog1 = new Dog("旺财1", "柯基");
+const dog2 = new Dog("旺财2", "金毛");
+
+dog1.colors.push("黄色");
+
+console.log(dog1.colors); // ['白色', '黑色', '黄色']
+console.log(dog2.colors); // ['白色', '黑色']
+```
+
+**缺点**：调用了两次父类构造函数（`Animal.call()` 和 `new Animal()`）
+
+#### 原型式继承
+
+使用 `Object.create()` 实现继承。
+
+```js
+const animal = {
+  name: "动物",
+  getName: function () {
+    return this.name;
+  },
+};
+
+const dog = Object.create(animal);
+dog.name = "旺财";
+dog.bark = function () {
+  console.log("汪汪汪");
+};
+
+console.log(dog.getName()); // '旺财'
+console.log(dog.__proto__ === animal); // true
+```
+
+#### 寄生式继承
+
+在原型式继承的基础上，增强创建的对象。
+
+```js
+function createDog(name, breed) {
+  const dog = Object.create(Animal.prototype);
+  dog.name = name;
+  dog.breed = breed;
+  dog.bark = function () {
+    console.log("汪汪汪");
+  };
+  return dog;
+}
+
+const dog = createDog("旺财", "柯基");
+dog.bark();
+```
+
+**缺点**：方法在函数内定义，无法复用
+
+#### 寄生组合式继承
+
+目前最理想的继承方式，结合寄生式继承和组合继承。
+
+```js
+function inheritPrototype(SubType, SuperType) {
+  const prototype = Object.create(SuperType.prototype);
+  prototype.constructor = SubType;
+  SubType.prototype = prototype;
+}
+
+function Animal(name) {
+  this.name = name;
+  this.colors = ["白色", "黑色"];
+}
+
+Animal.prototype.getName = function () {
+  return this.name;
+};
+
+function Dog(name, breed) {
+  Animal.call(this, name);
+  this.breed = breed;
+}
+
+inheritPrototype(Dog, Animal);
+
+Dog.prototype.bark = function () {
+  console.log("汪汪汪");
+};
+
+const dog = new Dog("旺财", "柯基");
+
+console.log(dog.name); // '旺财'
+console.log(dog.breed); // '柯基'
+console.log(dog.getName()); // '旺财'
+dog.bark(); // '汪汪汪'
+```
+
+#### ES6 Class 继承
+
+使用 `class` 关键字和 `extends` 实现继承。
+
+```js
+class Animal {
+  constructor(name) {
+    this.name = name;
+    this.colors = ["白色", "黑色"];
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  static create(name) {
+    return new this(name);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);
+    this.breed = breed;
+  }
+
+  bark() {
+    console.log("汪汪汪");
+  }
+}
+
+const dog = new Dog("旺财", "柯基");
+
+console.log(dog.name); // '旺财'
+console.log(dog.breed); // '柯基'
+console.log(dog.getName()); // '旺财'
+dog.bark(); // '汪汪汪'
+```
+
+**super 关键字**：
+
+- `super()` - 调用父类构造函数，必须在子类构造函数第一行
+- `super.method()` - 调用父类方法
+
+```js
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);
+    this.breed = breed;
+  }
+
+  getName() {
+    return `Dog: ${super.getName()}`;
+  }
+}
+
+const dog = new Dog("旺财", "柯基");
+console.log(dog.getName()); // 'Dog: 旺财'
+```
+
+#### 继承模式对比
+
+| 模式           | 优点               | 缺点                       |
+| -------------- | ------------------ | -------------------------- |
+| 原型链继承     | 简单易用           | 引用类型属性共享，无法传参 |
+| 构造函数继承   | 可传参，属性独立   | 方法无法复用               |
+| 组合继承       | 常用方式，属性独立 | 调用两次父类构造函数       |
+| 原型式继承     | 简单               | 引用类型共享               |
+| 寄生式继承     | 可增强对象         | 方法无法复用               |
+| 寄生组合式继承 | 完美方案           | 实现稍复杂                 |
+| ES6 Class 继承 | 语法简洁，语义清晰 | 需要支持 ES6               |
 
 ## JavaScript 运行时与浏览器
 
