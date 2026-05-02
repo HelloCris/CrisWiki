@@ -48,6 +48,20 @@
 
 ### [数据库](nodejs/database.md)
 
+## Vue
+
+### [Vue2](vue/base2.md)
+
+### [Vue3](vue/base3.md)
+
+## Electron
+
+### [Electron基础](electron/base.md)
+
+## Java
+
+### [Java基础](java/base.md)
+
 ## IT基础知识
 
 ### [Linux](others/linux.md)

@@ -69,6 +69,35 @@ export const sidebarConfig = [
         ],
       },
       {
+        text: "Vue",
+        collapsed: true,
+        items: [
+          { text: "Vue2", link: "/notes/vue/base2.md" },
+          { text: "Vue3", link: "/notes/vue/base3.md" },
+        ],
+      },
+      {
+        text: "Electron",
+        collapsed: true,
+        items: [
+          { text: "Electron基础", link: "/notes/electron/base.md" },
+        ],
+      },
+      {
+        text: "Java",
+        collapsed: true,
+        items: [
+          { text: "Java基础", link: "/notes/java/base.md" },
+        ],
+      },
+      {
+        text: "微信小程序",
+        collapsed: true,
+        items: [
+          { text: "微信小程序基础", link: "/notes/weixin/mini.md" },
+        ],
+      },
+      {
         text: "IT基础知识",
         collapsed: true,
         items: [
