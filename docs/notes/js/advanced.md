@@ -466,7 +466,7 @@ for (let i = 0; i < 3; i++) {
 // 输出：0 1 2
 ```
 
-## 面向对象编程 (OOP)
+## 面向对象编程
 
 ### 原型与原型链
 
@@ -908,8 +908,218 @@ console.log(dog.getName()); // 'Dog: 旺财'
 
 ### 进程与线程
 
+#### 进程
+
+进程是程序在操作系统中的一次执行过程，是操作系统进行资源分配和调度的基本单位。每个进程都有独立的内存空间和系统资源，进程之间相互隔离，互不影响。
+
+**进程的特点**：
+
+- 独立的空间和资源
+- 进程间的通信需要通过 IPC（进程间通信）
+- 一个进程可以包含多个线程
+- 进程崩溃不会直接影响其他进程
+
+#### 线程
+
+线程是进程内的执行单元，是 CPU 调度的最小单位。同一个进程内的多个线程共享进程的内存空间和资源（堆、方法区等），但每个线程有自己的程序计数器、虚拟机栈和本地方法栈。
+
+**线程的特点**：
+
+- 共享进程的内存空间
+- 线程间通信开销小
+- 线程是轻量级的，创建和销毁成本低
+- 同一进程内的线程会相互影响
+
+#### 进程与线程的关系
+
+```
+进程
+├── 线程1（拥有独立的栈、程序计数器）
+├── 线程2（拥有独立的栈、程序计数器）
+├── 线程3（拥有独立的栈、程序计数器）
+└── 共享资源
+    ├── 堆内存
+    ├── 方法区
+    └── 文件描述符等
+```
+
 ### 浏览器内核
+
+浏览器内核（也称为渲染引擎）是浏览器的核心组件，负责解析 HTML、CSS 和 JavaScript，并将页面渲染到屏幕上。不同的浏览器使用不同的内核。
+
+#### 主要浏览器内核
+
+- **Trident**：IE 浏览器使用的内核
+- **Gecko**：Firefox 浏览器使用的内核
+- **WebKit**：Safari 浏览器使用的内核，特点是轻量、简洁
+- **Blink**：Chrome、Opera 浏览器使用的内核，是 WebKit 的分支
+
+#### 浏览器内核的主要模块
+
+```
+浏览器内核
+├── HTML 解析器（Parser）
+│   └── 将 HTML 解析为 DOM 树
+├── CSS 解析器（Parser）
+│   └── 解析 CSS 生成 CSSOM 树
+├── JavaScript 引擎
+│   └── 解析和执行 JavaScript
+├── 布局引擎（Layout）
+│   └── 计算 DOM 元素的位置和大小
+├── 渲染引擎（Render）
+│   └── 将 DOM 和 CSSOM 合成渲染树并绘制
+└── 合成器（Compositor）
+    └── 分层合成，GPU 加速渲染
+```
 
 ### js为什么是单线程的
 
+JavaScript 设计为单线程，主要有以下几个原因：
+
+1. **DOM 操作的线程安全**
+   JavaScript 的主要用途是操作 DOM。如果 JavaScript 是多线程的，当两个线程同时操作同一个 DOM 元素时，会产生冲突。
+
+   ```js
+   // 多线程场景下可能出现的问题
+   线程1: element.innerHTML = "<div>A</div>";
+   线程2: element.innerHTML = "<div>B</div>";
+   // 最终结果不可预测
+   ```
+
+2. **简化编程模型**
+   单线程使得 JavaScript 的执行顺序是确定的，开发者不需要考虑复杂的线程同步问题，如死锁、竞态条件等。
+
+3. **历史原因**
+   JavaScript 诞生于 1995 年，最初用于简单的网页交互在当时的设计目标下，单线程是合理的选择。
+
 ### 浏览器的事件循环
+
+事件循环（Event Loop）是 JavaScript 异步编程的核心机制，负责协调同步代码、微任务和宏任务的执行。虽然 JavaScript 是单线程，但通过事件循环可以实现非阻塞的异步操作。
+
+#### 执行栈与任务队列
+
+JavaScript 代码执行时，会使用执行栈（Call Stack）来管理函数调用。异步任务完成时，会被放入任务队列（Task Queue）中等待执行。
+
+```
+执行栈 (Call Stack)
+├── 主线程
+└── 正在执行的函数上下文
+
+任务队列 (Task Queue)
+├── 宏任务队列 (Macrotask Queue)
+│   ├── setTimeout 回调
+│   ├── setInterval 回调
+│   ├── UI 渲染
+│   └── I/O 操作
+└── 微任务队列 (MicroTask Queue)
+    ├── Promise.then 回调
+    ├── MutationObserver 回调
+    └── queueMicrotask 回调
+```
+
+#### 微任务与宏任务
+
+**微任务（MicroTask）**：
+
+- Promise 的回调（then、catch、finally）
+- MutationObserver
+- queueMicrotask
+- async/await（await 后面的是微任务）
+
+**宏任务（Macrotask）**：
+
+- setTimeout / setInterval
+- I/O 操作
+- UI 渲染
+- setImmediate（Node.js）
+
+::: info 执行顺序
+
+1. 执行同步代码（执行栈清空）
+2. 执行所有微任务队列中的任务
+3. 执行一个宏任务
+4. 检查并执行微任务队列中的任务（如有新增）
+5. 渲染 UI（如需要）
+6. 重复步骤 3-5
+
+:::
+
+#### 经典题目
+
+**题目1：async/await 执行顺序**
+
+```javascript
+async function async1() {
+  console.log("1");
+  await async2();
+  console.log("2");
+}
+
+async function async2() {
+  console.log("3");
+}
+
+console.log("4");
+
+setTimeout(() => {
+  console.log("5");
+}, 0);
+
+async1();
+
+new Promise((resolve) => {
+  console.log("6");
+  resolve();
+}).then(() => {
+  console.log("7");
+});
+
+console.log("8");
+
+// 输出：4 1 3 6 8 2 7 5
+```
+
+**题目2：循环与定时器**
+
+```javascript
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 0);
+}
+
+// 输出：3 3 3（var 是函数作用域）
+
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 0);
+}
+
+// 输出：0 1 2（let 是块级作用域，每次循环都会创建新的 i）
+```
+
+**题目3：Promise 链式调用**
+
+```javascript
+Promise.resolve()
+  .then(() => {
+    console.log("1");
+    return Promise.resolve("2");
+  })
+  .then((val) => {
+    console.log(val);
+  });
+
+Promise.resolve()
+  .then(() => {
+    console.log("3");
+  })
+  .then(() => {
+    console.log("4");
+  });
+
+// 输出：1 3 2 4
+// Promise.resolve('2') 会创建一个新的 Promise
+// 相当于多执行一次微任务
+```
