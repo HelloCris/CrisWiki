@@ -79,23 +79,17 @@ export const sidebarConfig = [
       {
         text: "Electron",
         collapsed: true,
-        items: [
-          { text: "Electron基础", link: "/notes/electron/base.md" },
-        ],
+        items: [{ text: "Electron基础", link: "/notes/electron/base.md" }],
       },
       {
         text: "Java",
         collapsed: true,
-        items: [
-          { text: "Java基础", link: "/notes/java/base.md" },
-        ],
+        items: [{ text: "Java基础", link: "/notes/java/base.md" }],
       },
       {
         text: "微信小程序",
         collapsed: true,
-        items: [
-          { text: "微信小程序基础", link: "/notes/weixin/mini.md" },
-        ],
+        items: [{ text: "小程序基础", link: "/notes/weixin/mini.md" }],
       },
       {
         text: "IT基础知识",
