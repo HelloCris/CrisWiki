@@ -87,9 +87,9 @@ export const sidebarConfig = [
         items: [{ text: "Java基础", link: "/notes/java/base.md" }],
       },
       {
-        text: "微信小程序",
+        text: "小程序",
         collapsed: true,
-        items: [{ text: "小程序基础", link: "/notes/weixin/mini.md" }],
+        items: [{ text: "微信小程序", link: "/notes/mini/weixin.md" }],
       },
       {
         text: "IT基础知识",

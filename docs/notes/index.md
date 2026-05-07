@@ -62,9 +62,9 @@
 
 ### [Java基础](java/base.md)
 
-## 微信小程序
+## 小程序
 
-### [小程序基础](weixin/mini.md)
+### [微信小程序](mini/weixin.md)
 
 ## IT基础知识
 
