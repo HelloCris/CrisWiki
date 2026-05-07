@@ -82,6 +82,180 @@
 |              | component.wxml | 组件的布局代码                                   |
 |              | component.wxss | 组件的样式代码                                   |
 
+### 配置文件
+
+::: info 常见的配置文件有哪些呢？
+
+- **project.config.json**：项目配置文件，比如项目名称、appid等；[项目配置文件](https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html)
+- **sitemap.json**：小程序搜索相关的；
+- **app.json**：全局配置；
+- **page.json**：页面配置；
+
+:::
+
+> [全局配置](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html)
+
+| 属性       | 类型     | 必填   | 描述               |
+| ---------- | -------- | ------ | ------------------ |
+| **pages**  | string[] | **是** | 页面路径列表       |
+| **window** | Object   | 否     | 全局的默认窗口表现 |
+| **tabBar** | Object   | 否     | 底部 tab 栏的表现  |
+
+**1. pages：页面路径列表**
+
+- **作用**：用于指定小程序由哪些页面组成，每一项都对应一个页面的路径（含文件名）信息。
+- **注意**：小程序中**所有的页面**都是必须在 `pages` 中进行注册的。
+
+**2. window：全局的默认窗口展示**
+
+- **作用**：用户指定窗口如何展示，其中还包含了很多其他的属性（如导航栏颜色、背景色等）。
+
+**3. tabBar：底部tab栏的展示**
+
+> **页面配置**
+
+- 每一个小程序页面也可以使用 .json 文件来对本页面的窗口表现进行配置。页面中配置项在当前页面会覆盖 app.json 的 window 中相同的配置项。
+
+### 小程序启动流程
+
+![小程序启动流程](asset/startupProcess.webp)
+
+::: info 界面渲染整体流程
+
+1. 在渲染层，宿主环境会把**WXML**转化成对应的**JS对象**；
+2. 将**JS对象**再次转成**真实DOM树**，交由渲染层线程渲染；
+3. 数据变化时，逻辑层提供最新的变化数据，JS对象发生变化比较进行diff算法对比；
+4. 将最新变化的内容反映到真实的DOM树中，更新UI；
+
+:::
+
+#### 注册App
+
+- 每个小程序都需要在 app.js 中调用 App 方法。[App 方法](https://developers.weixin.qq.com/miniprogram/dev/reference/api/App.html)
+- 在注册时，可以绑定对应的生命周期函数，在生命周期函数中，执行对应的代码。
+
+| 属性           | 类型     | 说明                                                                 |
+| -------------- | -------- | -------------------------------------------------------------------- |
+| onLaunch       | function | 生命周期回调——监听小程序初始化。                                     |
+| onShow         | function | 生命周期回调——监听小程序启动或切前台。                               |
+| onHide         | function | 生命周期回调——监听小程序切后台。                                     |
+| onError        | function | 错误监听函数。                                                       |
+| onPageNotFound | function | 页面不存在监听函数。                                                 |
+| 其他           | any      | 开发者可以添加任意的函数或数据变量到 Object 参数中，用 this 可以访问 |
+
+::: info 注册App时常做的操作
+
+1. 判断小程序的**进入场景**
+2. 监听**生命周期函数**，在生命周期中执行对应的业务逻辑，比如在某个生命周期函数中获取微信用户的信息
+3. 因为App()实例只有一个，并且是**全局共享的**（单例对象），所以我们可以将一些共享数据放在这里。
+
+:::
+
+```js
+App({
+  // 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
+  onLaunch: function () {
+    console.log("小程序初始化完成: onLaunch");
+  },
+  // 当小程序启动，或从后台进入前台显示，会触发 onShow
+  onShow: function (options) {
+    console.log("小程序第一次启动，或者从后台进入前台, onShow");
+  },
+  // 当小程序从前台进入后台，会触发 onHide
+  onHide: function () {
+    console.log("小程序从前台进入后台, onHide");
+  },
+  // 当小程序发生脚本错误，或者 api 调用失败时，会触发 onError 并带上错误信息
+  onError: function (msg) {
+    console.log("小程序发生错误, onError", msg);
+  },
+  globalData: {
+    title: "全局的title",
+    name: "cris",
+    age: 18,
+    height: 1.8,
+  },
+});
+```
+
+```js
+// 1.获取全局的app对象
+const app = getApp();
+
+Page({
+  data: {
+    message: "微信",
+    name: "kobe",
+  },
+  onClick() {
+    // 2.通过app.globalData.属性的方式获取
+    this.setData({
+      message: app.globalData.title,
+      name: app.globalData.name,
+    });
+  },
+});
+```
+
+#### 注册Page
+
+- 小程序中的每个页面，都有一个对应的js文件，其中调用Page方法。[Page 方法](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html)
+- 在注册时，可以绑定初始化数据、生命周期回调、事件处理函数等。
+
+| 属性              | 类型     | 说明                                                                           |
+| ----------------- | -------- | ------------------------------------------------------------------------------ |
+| data              | Object   | 页面的初始数据                                                                 |
+| onLoad            | function | 生命周期回调——监听页面加载                                                     |
+| onShow            | function | 生命周期回调——监听页面显示                                                     |
+| onReady           | function | 生命周期回调——监听页面初次渲染完成                                             |
+| onHide            | function | 生命周期回调——监听页面隐藏                                                     |
+| onUnload          | function | 生命周期回调——监听页面卸载                                                     |
+| onPullDownRefresh | function | 监听用户下拉动作                                                               |
+| onReachBottom     | function | 页面上拉触底事件的处理函数                                                     |
+| onShareAppMessage | function | 用户点击右上角转发                                                             |
+| onPageScroll      | function | 页面滚动触发事件的处理函数                                                     |
+| onResize          | function | 页面尺寸改变时触发，详见 响应显示区域变化                                      |
+| onTabItemTap      | function | 当前是 tab 页时，点击 tab 时触发                                               |
+| 其他              | any      | 开发者可以添加任意的函数或数据到 Object 参数中，在页面的函数中用 this 可以访问 |
+
+::: info 注册Page时常做的操作
+
+1. 在**生命周期函数**中发送网络请求，从服务器获取数据；
+2. **初始化一些数据**，以方便被wxml引用展示；
+3. **监听wxml中的事件**，绑定对应的事件函数；
+4. 其他一些**监听**（比如页面滚动、上拉刷新、下拉加载更多等）；
+
+:::
+
+```js
+Page({
+  // ----------- 数据 -----------
+  data: {
+    message: "你好啊,李银河",
+  },
+  // ----------- 生命周期函数 -----------
+  onLoad() {
+    console.log("页面加载：onLoad");
+  },
+  onShow() {
+    console.log("页面展示：onShow");
+  },
+  onReady() {
+    console.log("页面渲染：onReady");
+  },
+  onHide() {
+    console.log("页面隐藏：onHide");
+  },
+  onUnload() {
+    console.log("页面卸载：onUnload");
+  },
+  // ----------- 事件监听 -----------
+  onClick(e) {
+    console.log("按钮被点击");
+  },
+});
+```
+
 ## 附录
 
 ### 附1: 小程序MVVM架构
