@@ -62,7 +62,7 @@
 
 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
 
-## 小程序架构和配置
+## 架构和配置
 
 ### 代码组织结构
 
@@ -256,6 +256,168 @@ Page({
 });
 ```
 
+## 常用内置组件
+
+[微信小程序组件文档](https://developers.weixin.qq.com/miniprogram/dev/component/)
+
+### Text
+
+Text组件用于显示文本，类似于span标签，是行内元素。
+
+| 属性       | 类型    | 默认值 | 必填 | 说明         |
+| ---------- | ------- | ------ | ---- | ------------ |
+| selectable | boolean | false  | 否   | 文本是否可选 |
+| space      | string  | -      | 否   | 显示连续空格 |
+| decode     | boolean | false  | 否   | 是否解码     |
+
+| space的合法值 | 说明                   |
+| ------------- | ---------------------- |
+| ensp          | 中文字符空格一半大小   |
+| emsp          | 中文字符空格大小       |
+| nbsp          | 根据字体设置的空格大小 |
+
+> decode可以解析的有 `&nbsp;` `&lt;` `&gt;` `&amp;` `&apos;` `&ensp;` `&emsp;`
+
+```html
+<!-- 1.selectable暂时无效 -->
+<text selectable="{{true}}">Hello World</text>
+<view></view>
+
+<!-- 2.space属性 -->
+<view>
+  <text space="ensp">Hello World</text>
+</view>
+<view>
+  <text space="emsp">Hello World</text>
+</view>
+<view>
+  <text space="nbsp">Hello World</text>
+</view>
+
+<!-- 3.decode属性: 显示 3 > 2 -->
+<text decode="{{true}}">3 &gt; 2</text>
+```
+
+### Button
+
+Button组件用于创建按钮，默认块级元素。
+
+| 属性        | 类型    | 默认值       | 必填 | 说明                                                                 |
+| ----------- | ------- | ------------ | ---- | -------------------------------------------------------------------- |
+| size        | string  | default      | 否   | 按钮的大小，default/mini                                             |
+| type        | string  | default      | 否   | 按钮的样式类型，primary/default/warn                                 |
+| plain       | boolean | false        | 否   | 按钮是否镂空，背景色透明                                             |
+| disabled    | boolean | false        | 否   | 是否禁用                                                             |
+| loading     | boolean | false        | 否   | 名称前是否带 loading 图标                                            |
+| form-type   | string  | -            | 否   | 用于 `<form>` 组件，点击分别会触发 `<form>` 组件的 submit/reset 事件 |
+| open-type   | string  | -            | 否   | 微信开放能力                                                         |
+| hover-class | string  | button-hover | 否   | 指定按钮按下去的样式类。当 `hover-class="none"` 时，没有点击态效果   |
+
+::: info open-type属性
+
+open-type用户获取一些特殊性的权限，可以绑定一些特殊的事件：
+
+| 常用值         | 说明                                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------ |
+| contact        | 打开客服会话，如果用户在会话中点击消息卡片后返回小程序，可以从bindcontact 回调中获得具体信息，具体说明 |
+| share          | 触发用户转发，使用前建议先阅读使用指引                                                                 |
+| getPhoneNumber | 获取用户手机号，可以从bindgetphonenumber回调中获取到用户信息，具体说明                                 |
+| getUserInfo    | 获取用户信息，可以从bindgetuserinfo回调中获取到用户信息                                                |
+
+```html
+<view>
+  <button size="mini" open-type="contact" bindcontact="onContact">
+    客服会话
+  </button>
+  <button size="mini" open-type="share">程序分享</button>
+  <button
+    size="mini"
+    open-type="getPhoneNumber"
+    bindgetphonenumber="onGetPhoneNumber"
+  >
+    获取电话
+  </button>
+  <button size="mini" open-type="getUserInfo" bindgetuserinfo="onGetUserInfo">
+    用户信息
+  </button>
+</view>
+```
+
+:::
+
+### View
+
+视图组件（块级元素，独占一行，通常用作容器组件）。
+
+| 属性                   | 类型    | 默认值 | 必填 | 说明                                                           |
+| ---------------------- | ------- | ------ | ---- | -------------------------------------------------------------- |
+| hover-class            | string  | none   | 否   | 指定按下去的样式类。当 `hover-class="none"` 时，没有点击态效果 |
+| hover-stop-propagation | boolean | false  | 否   | 指定是否阻止本节点的祖先节点出现点击态                         |
+| hover-start-time       | number  | 50     | 否   | 按住后多久出现点击态，单位毫秒                                 |
+| hover-stay-time        | number  | 400    | 否   | 手指松开后点击态保留时间，单位毫秒                             |
+
+### Image
+
+| 属性      | 类型        | 默认值      | 必填 | 说明                                                   |
+| --------- | ----------- | ----------- | ---- | ------------------------------------------------------ |
+| src       | string      | -           | 否   | 图片资源地址                                           |
+| mode      | string      | scaleToFill | 否   | 图片裁剪、缩放的模式                                   |
+| lazy-load | boolean     | false       | 否   | 图片懒加载，在即将进入一定范围（上下三屏）时才开始加载 |
+| binderror | eventhandle | -           | 否   | 当错误发生时触发，event.detail = {errMsg}              |
+| bindload  | eventhandle | -           | 否   | 当图片载入完毕时触发，event.detail = {height, width}   |
+
+[mode属性官方文档](https://developers.weixin.qq.com/miniprogram/dev/component/image.html)
+
+### Input
+
+| 属性         | 类型        | 默认值 | 必填 | 说明                                                                                                                                              |
+| ------------ | ----------- | ------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| value        | string      | -      | 是   | 输入框的初始内容                                                                                                                                  |
+| type         | string      | text   | 否   | input 的类型                                                                                                                                      |
+| password     | boolean     | false  | 否   | 是否是密码类型                                                                                                                                    |
+| placeholder  | string      | -      | 是   | 输入框为空时占位符                                                                                                                                |
+| confirm-type | string      | done   | 否   | 设置键盘右下角按钮的文字，仅在 type='text' 时生效                                                                                                 |
+| bindinput    | eventhandle | -      | 是   | 键盘输入时触发，`event.detail = {value, cursor, keyCode}`，keyCode 为键值，2.1.0 起支持，处理函数可以直接 return 一个字符串，将替换输入框的内容。 |
+| bindfocus    | eventhandle | -      | 是   | 输入框聚焦时触发，`event.detail = { value, height }`，height 为键盘高度，在基础库 1.9.90 起支持                                                   |
+| bindblur     | eventhandle | -      | 是   | 输入框失去焦点时触发，`event.detail = {value}                 `                                                                                   |
+| bindconfirm  | eventhandle | -      | 是   | 点击完成按钮时触发，`event.detail = {value}                 `                                                                                     |
+
+| type常用合法值 | 说明               |
+| -------------- | ------------------ |
+| text           | 文本输入键盘       |
+| number         | 数字输入键盘       |
+| idcard         | 身份证输入键盘     |
+| digit          | 带小数点的数字键盘 |
+
+| confirm-type常用合法值 | 说明                 |
+| ---------------------- | -------------------- |
+| send                   | 右下角按钮为“发送”   |
+| search                 | 右下角按钮为“搜索”   |
+| next                   | 右下角按钮为“下一个” |
+| go                     | 右下角按钮为“前往”   |
+| done                   | 右下角按钮为“完成”   |
+
+### scroll-view
+
+`scroll-view` 可以实现局部滚动。
+
+| 属性              | 类型        | 默认值 | 必填 | 说明                                                                                            |
+| ----------------- | ----------- | ------ | ---- | ----------------------------------------------------------------------------------------------- |
+| scroll-x          | boolean     | false  | 否   | 允许横向滚动                                                                                    |
+| scroll-y          | boolean     | false  | 否   | 允许纵向滚动                                                                                    |
+| bindscrolltoupper | eventhandle | -      | 否   | 滚动到顶部/左边时触发                                                                           |
+| bindscrolltolower | eventhandle | -      | 否   | 滚动到底部/右边时触发                                                                           |
+| bindscroll        | eventhandle | -      | 否   | 滚动时触发，`event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}` |
+
+::: warning ⚠️ 注意
+
+1.  **实现滚动效果必须添加 `scroll-x` 或者 `scroll-y` 属性**。
+2.  **垂直方向滚动必须设置 `scroll-view` 一个高度**。
+
+:::
+
+## WXSS & WXML & WXS
+
 ## 附录
 
 ### 附1: 小程序MVVM架构
@@ -282,4 +444,19 @@ Page({
 
 :::
 
-### 附2:
+### 附2: WXML公共属性
+
+| 属性名             | 类型         | 描述           | 注解                                     |
+| ------------------ | ------------ | -------------- | ---------------------------------------- |
+| **id**             | String       | 组件的唯一标识 | 整个页面唯一                             |
+| **class**          | String       | 组件的样式类   | 在对应的 WXSS 中定义的样式类             |
+| **style**          | String       | 组件的内联样式 | 可以动态设置的内联样式                   |
+| **hidden**         | Boolean      | 组件是否显示   | 所有组件默认显示                         |
+| **data-\***        | Any          | 自定义属性     | 组件上触发的事件时，会发送给事件处理函数 |
+| **bind\*/catch\*** | EventHandler | 组件的事件     | -                                        |
+
+::: info 补充说明
+
+- **data-\***：这是自定义数据属性，通常用于在组件上存储数据，以便在事件触发时传递给逻辑层（JS）。例如 `data-id="123"`。
+- **bind\*/catch\***：这是事件绑定关键字，用于绑定组件的事件处理函数，如 `bindtap`、`catchtouchstart` 等。
+  :::
