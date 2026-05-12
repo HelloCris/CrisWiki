@@ -997,6 +997,95 @@ export default request;
 
 ### 登录流程
 
+1. 调用 `wx.login` 获取 code
+2. 调用 `wx.request` 发送 code 到我们自己的服务器（我们自己的服务器会返回一个登录态的标识，比如 token）
+3. 将登录态的标识 token 进行存储，以便下次使用
+4. 请求需要登录态标识的接口时，携带 token
+
+![登录流程](asset/weixinMiniLogin.webp)
+
+### 界面跳转
+
+界面的跳转有两种方式：**通过navigator组件** 和 **通过wx的API跳转**。
+
+- navigator组件主要就是用于界面的跳转的：
+
+| 属性      | 类型   | 默认值   | 说明                                                  |
+| --------- | ------ | -------- | ----------------------------------------------------- |
+| target    | string | self     | 在哪个目标上发生跳转，默认当前小程序                  |
+| url       | string |          | 当前小程序内的跳转链接                                |
+| open-type | string | navigate | 跳转方式                                              |
+| delta     | number | 1        | 当 open-type 为 'navigateBack' 时有效，表示回退的层数 |
+
+| open-type值  | 说明                                                      |
+| ------------ | --------------------------------------------------------- |
+| navigate     | 对应 `wx.navigateTo` 或 `wx.navigateToMiniProgram` 的功能 |
+| redirect     | 对应 `wx.redirectTo` 的功能                               |
+| switchTab    | 对应 `wx.switchTab` 的功能                                |
+| reLaunch     | 对应 `wx.reLaunch` 的功能                                 |
+| navigateBack | 对应 `wx.navigateBack` 的功能                             |
+| exit         | 退出小程序，`target="miniProgram"` 时生效                 |
+
+::: warning ⚠️ 注意
+
+- **redirect**：关闭当前页面，跳转到应用内的某个页面。但是不允许跳转到 **tabbar** 页面，并且不能返回。（不是一个压栈）
+- **switchTab**：跳转到 **tabBar** 页面，并关闭其他所有非 **tabBar** 页面。（需要在tabBar中定义的）
+- **reLaunch**：关闭所有的页面，打开应用中某个页面。（直接展示某个页面，并且可以跳转到tabBar页面）
+
+:::
+
+::: info 导航返回
+
+- 导航返回有两个属性来起作用：
+  - open-type：navigateBack（表示该navigator组件用于返回）
+  - delta：返回的层级（指定返回的层级，open-type必须是navigateBack才生效）
+
+:::
+
+::: info 数据传递
+
+- 如何在界面跳转过程中我们需要相互传递一些数据，应该如何完成呢？
+  - 首页 -> 详情页：使用URL中的query字段：
+    - `url?key1=value1&key2=value2`
+  - 详情页 -> 首页：在详情页内部拿到首页的页面对象，直接修改数据
+    - `getCurrentPages()[length-2]`
+    - `prePage.setData(设置数据)`
+
+::: tip
+
+- **问题一：在什么地方修改数据**
+  - 如果你是监听按钮或者navigator的点击来返回时，可以通过bindtap来映射到某个函数，在函数中完成。
+  - 但是这种方式不能监听左上角返回按钮的点击。
+  - 所以我们选择在onUnload中修改数据
+
+- **问题二：如何修改数据**
+  - 小程序并没有提供直接修改数据的方法。
+  - 但是可以通过getCurrentPages来获取所有的页面，然后使用页面对象的setData({})函数来修改
+
+:::
+
+::: info 代码的跳转和返回
+
+- 微信也提供了对应的API接口：
+  - `wx.navigateTo(url[, ])`
+  - `wx.navigateBack([delta])`
+
+```js
+onBtnClick() {
+  wx.navigateTo({
+    url: '../detail/detail?name=kobe&age=30',
+  })
+}
+
+onBack() {
+  wx.navigateBack({
+    delta: 1
+  })
+}
+```
+
+:::
+
 ## 附录
 
 ### 附1: 小程序MVVM架构
