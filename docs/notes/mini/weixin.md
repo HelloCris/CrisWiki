@@ -773,6 +773,230 @@ Page({
 | **module** | String | 当前 `<wxs>` 标签的模块名。**必填字段**。                                          |
 | **src**    | String | 引用 `.wxs` 文件的相对路径。仅当本标签为**单闭合标签**或**标签的内容为空**时有效。 |
 
+## 事件处理
+
+### 事件简介
+
+::: info 事件是如何处理呢？
+
+- 事件是通过`bind/catch`这个属性绑定在组件上的（和普通的属性写法很相似，以`key="value"`形式）；
+- `key`以`bind`或`catch`开头，从`1.5.0`版本开始，可以在`bind`和`catch`后加上一个冒号；
+- 同时在当前页面的`Page`构造器中定义对应的事件处理函数`tapName`，如果没有对应的函数，触发事件时会报错
+- 当用户点击该`button`区域时，达到触发条件生成事件`tap`，该事件处理函数`tapName`会被执行，同时还会收到一个事件对象`event`。
+
+:::
+
+- **页面结构（home.wxml）**：
+  ```html
+  <!--home.wxml-->
+  <button size="mini" bindtap="onBtnTap">按钮</button>
+  ```
+- **逻辑层（home.js）**：
+  ```js
+  // home.js
+  Page({
+    onBtnTap(e) {
+      console.log("按钮被点击:", e);
+    },
+  });
+  ```
+
+### 常见事件类型
+
+- **组件特性事件**：
+  - `input`组件有`bindinput`/`bindblur`/`bindfocus`等；
+  - `scroll-view`组件有`bindscrolltoupper`/`bindscrolltolower`等；
+- **通用常见事件**：
+  | 类型 | 触发条件 |
+  |--------------|------------------------------|
+  | `touchstart` | 手指触摸动作开始 |
+  | `touchmove` | 手指触摸后移动 |
+  | `touchcancel`| 手指触摸动作被打断（如来电、弹窗） |
+  | `touchend` | 手指触摸动作结束 |
+  | `tap` | 手指触摸后马上离开 |
+  | `longpress` | 手指触摸后，超过350ms再离开（触发后`tap`不触发） |
+  | `longtap` | 手指触摸后，超过350ms再离开（推荐用`longpress`代替） |
+
+::: warning ⚠️ 注意
+
+- `touchcancel`：仅在特定场景（如来电打断）触发；
+- `tap`和`longpress`：通常只触发其中一个。
+
+:::
+
+### 事件对象
+
+当某个事件触发时，会产生一个**事件对象**，并传入回调函数。事件对象的常见属性如下：
+
+| 属性             | 类型    | 说明                                       |
+| ---------------- | ------- | ------------------------------------------ |
+| `type`           | String  | 事件类型                                   |
+| `timeStamp`      | Integer | 页面打开到触发事件所经过的毫秒数           |
+| `target`         | Object  | 触发事件的组件的属性值集合                 |
+| `currentTarget`  | Object  | 当前组件的属性值集合                       |
+| `detail`         | Object  | 额外的信息                                 |
+| `touches`        | Array   | 触摸事件：当前停留在屏幕中的触摸点信息数组 |
+| `changedTouches` | Array   | 触摸事件：当前变化的触摸点信息数组         |
+
+::: info touches和changedTouches的区别
+
+- **touches**：当前屏幕上**所有**触摸点的信息数组
+- **changedTouches**：触发当前事件**发生变化**的触摸点信息数组
+
+**具体区别**：
+
+| 事件类型     | `touches`                    | `changedTouches`                              |
+| ------------ | ---------------------------- | --------------------------------------------- |
+| `touchstart` | 当前屏幕中所有触摸点         | 当前按下**发生变化**的触摸点（与touches相同） |
+| `touchmove`  | 当前屏幕中所有触摸点         | 当前移动**发生变化**的触摸点                  |
+| `touchend`   | **为空**（触摸点已离开屏幕） | 刚离开屏幕的触摸点                            |
+
+**示例场景**：
+
+- 两根手指同时触摸屏幕时，`touches` 包含2个触摸点
+- 手指抬起时，`touches` 变为空数组，`changedTouches` 包含抬起的触摸点
+
+:::
+
+::: info currentTarget和target的区别
+
+- **target**：触发事件的**原始**组件
+- **currentTarget**：当前**处理事件**的组件
+
+**核心区别**：当事件**冒泡**时，两者会不同。
+
+**示例场景**：
+
+```html
+<!-- view-wrapper 是父组件，view-inner 是子组件 -->
+<view class="wrapper" bindtap="handleWrapperTap">
+  <view class="inner" bindtap="handleInnerTap"></view>
+</view>
+```
+
+- 点击 inner 组件时：
+  - `target`：inner 组件（触发事件的原始组件）
+  - `currentTarget`：inner 组件（如果只在inner的事件处理中）
+- 当事件冒泡到 wrapper 组件时：
+  - `target`：inner 组件（始终是触发事件的原始组件）
+  - `currentTarget`：wrapper 组件（当前正在处理事件的组件）
+
+**使用建议**：
+
+- 如果需要获取触发事件的元素信息，使用 `target`
+- 如果需要获取当前绑定事件的元素信息，使用 `currentTarget`
+
+:::
+
+### 事件参数的传递
+
+- **传递方式**：通过组件的`data-属性`传递参数（格式：`data-属性名="值"`）。
+- **获取方式**：在事件处理函数中，通过`e.currentTarget.dataset.属性名`获取。
+- **示例**：
+  - 页面结构（argument.wxml）：
+    ```html
+    <view bind:tap="onTap1" data-name="cris" data-age="18" data-height="1.88">
+      事件参数
+    </view>
+    ```
+  - 逻辑层（argument.js）：
+
+    ```js
+    Page({
+      onTap1(e) {
+        const data = e.currentTarget.dataset;
+        console.log(data);
+        // 输出 {name: "cris", age: "18", height: "1.88"}
+      },
+    });
+    ```
+
+### 冒泡和捕获
+
+- **事件流程**：事件分为**捕获阶段**和**冒泡阶段**。
+  - 捕获阶段：事件从外层组件向内层组件传递（通过`capture-bind`绑定）；
+  - 冒泡阶段：事件从内层组件向外层组件传递（通过`bind`绑定）。
+  - 事件先经过“捕获阶段”（从外层到内层），再经过“冒泡阶段”（从内层到外层）。
+
+## 组件化开发
+
+## 系统API
+
+### 网络请求
+
+微信提供了专属的API接口,用于网络请求: wx.request(Object object)
+
+| 属性         | 类型                      | 默认值 | 必填 | 说明                                                                               |
+| ------------ | ------------------------- | ------ | ---- | ---------------------------------------------------------------------------------- |
+| url          | string                    |        | 是   | 开发者服务器接口地址                                                               |
+| data         | string/object/ArrayBuffer |        | 否   | 请求的参数                                                                         |
+| header       | Object                    |        | 否   | 设置请求的 header, header 中不能设置 Referer, content-type 默认为 application/json |
+| method       | string                    | GET    | 否   | HTTP 请求方法                                                                      |
+| dataType     | string                    | json   | 否   | 返回的数据格式                                                                     |
+| responseType | string                    | text   | 否   | 响应的数据类型                                                                     |
+| success      | function                  |        | 否   | 接口调用成功的回调函数                                                             |
+| fail         | function                  |        | 否   | 接口调用失败的回调函数                                                             |
+| complete     | function                  |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行）                                   |
+
+**封装成Promise的方式 (network.js)**：
+
+```js
+import { baseURL, timeout } from "./config.js";
+
+function request(options) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: baseURL + options.url,
+      timeout: timeout,
+      data: options.data,
+      success: function (res) {
+        resolve(res.data);
+      },
+      fail: reject,
+    });
+  });
+}
+
+export default request;
+```
+
+### 展示弹窗
+
+| 特性     | `wx.showToast`              | `wx.showModal`     | `wx.showLoading`          | `wx.showActionSheet` |
+| -------- | --------------------------- | ------------------ | ------------------------- | -------------------- |
+| **用途** | 显示轻提示/成功/失败/加载中 | 显示确认对话框     | 显示加载中loading         | 显示底部操作菜单     |
+| **阻塞** | 不阻塞（自动消失）          | 阻塞（需用户点击） | 不阻塞（手动关闭）        | 阻塞（需用户选择）   |
+| **图标** | 是                          | 否                 | 是                        | 否                   |
+| **标题** | 是（可选）                  | 是（必填）         | 是（可选）                | 否                   |
+| **时间** | 1500ms（可自定义）          | 无（手动关闭）     | 手动调用 `wx.hideLoading` | 点击后自动关闭       |
+| **场景** | 操作成功/失败提示           | 确认删除/重要操作  | 网络请求时显示            | 选择分享/更多操作    |
+
+::: info ⚠️ 注意
+
+- `showToast` 和 `showLoading` 都会在页面切换时自动消失
+- `showToast` 和 `showLoading` 互斥，同时只能显示一个
+- `showLoading` 必须手动调用 `wx.hideLoading()` 才能关闭
+- 微信7.0.0后 `showModal` 的取消按钮默认隐藏，需设置 `showCancel: true` 显示
+
+:::
+
+### 页面分享
+
+- 分享是小程序扩散的一种重要方式，小程序中有两种分享方式：
+  - 点击右上角的菜单按钮，之后点击转发
+  - 点击某一个按钮，直接转发
+
+- 当我们转发给好友一个小程序时，通常小程序中会显示一些信息：
+  - 如何决定这些信息的展示呢？通过 `onShareAppMessage`
+
+| 字段     | 说明                                  | 默认值                                   |
+| -------- | ------------------------------------- | ---------------------------------------- |
+| title    | 转发标题                              | 当前小程序名称                           |
+| path     | 转发路径                              | 当前页面 path，必须是以 / 开头的完整路径 |
+| imageUrl | 自定义图片路径，显示图片长宽比是5:4。 | 使用默认截图                             |
+
+### 登录流程
+
 ## 附录
 
 ### 附1: 小程序MVVM架构
