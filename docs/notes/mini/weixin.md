@@ -973,6 +973,217 @@ Component({
 
 ### 组件通信
 
+::: info 向组件传递数据 properties
+
+- **properties支持的类型**：
+  - String、Number、Boolean
+  - Object、Array、null（不限制类型）
+
+**my-props.wxml**
+
+```html
+<view>
+  <view>title:{{title}}</view>
+  <view>content:{{content}}</view>
+  <view>counter:{{counter}}</view>
+</view>
+```
+
+**JS 配置代码**
+
+```js
+Component({
+  properties: {
+    title: String,
+    content: {
+      type: String,
+      value: "",
+    },
+    counter: {
+      type: Number,
+      value: 0,
+      observer: function (newVal, oldVal) {
+        console.log(newVal, oldVal);
+      },
+    },
+  },
+});
+```
+
+**使用示例**
+
+```html
+<my-props title="标题" content="内容,哈哈哈" counter="{{123}}" />
+```
+
+:::
+
+::: info 向组件传递样式 externalClasses
+
+- **给组件传递样式**：
+  - 有时候，我们不希望将样式在组件内固定不变，而是外部可以决定样式。
+  - 这个时候，我们可以使用 **externalClasses 属性**：
+    1. 在 Component 对象中，定义 externalClasses 属性
+    2. 在组件内的 wxml 中使用 externalClasses 属性中的 class
+    3. 在页面中传入对应的 class，并且给这个 class 设置样式
+
+**my-extern.wxml**
+
+```html
+<!--components/my-extern/my-extern.wxml-->
+<view>
+  <view class="titleClass">我是标题</view>
+  <view class="contentClass">我是内容,哈哈哈</view>
+</view>
+```
+
+**my-extern.js**
+
+```js
+// components/my-extern/my-extern.js
+Component({
+  externalClasses: ["titleClass", "contentClass"],
+});
+```
+
+**external.wxml (页面使用)**
+
+```html
+<my-extern titleClass="title" contentClass="content" />
+```
+
+**external.wxss (页面样式)**
+
+```css
+.title {
+  color: red;
+}
+
+.content {
+  color: purple;
+}
+```
+
+:::
+
+::: info 组件向外传递事件 - 自定义事件
+
+**event-cpn.wxml (组件模板)**
+
+```html
+<!--components/event-cpn/event-cpn.wxml-->
+<view class="event-cpn">
+  <view
+    wx:for="{{titles}}"
+    wx:key="{{index}}"
+    class="item, {{currentIndex === index ? 'active': ''}}"
+    bind:tap="titleClick"
+    data-index="{{index}}"
+  >
+    {{item}}
+  </view>
+</view>
+```
+
+**组件 JS 逻辑**
+
+```js
+methods: {
+  titleClick(e) {
+    const index = e.target.dataset.index;
+    this.setData({
+      currentIndex: index
+    })
+    this.triggerEvent('titleclick', {index}, {})
+  },
+  increment() {
+    this.setData({
+      counter: ++this.data.counter
+    })
+  }
+}
+```
+
+**页面 WXML (使用组件)**
+
+```html
+<text>pages/event/event.wxml</text>
+<event-cpn
+  titles="{{['商品', '新闻', '消息']}}"
+  id="event-cpn"
+  bind:titleclick="titleclick"
+></event-cpn>
+<text>{{infos[currentIndex]}}</text>
+```
+
+**页面 JS 逻辑 (监听事件)**
+
+```js
+titleclick(e) {
+  this.setData({
+    currentIndex: e.detail.index
+  })
+},
+```
+
+:::
+
+::: info 页面直接调用组件方法`this.selectComponent`
+
+```js
+onClick(e) {
+  console.log('按钮被点击')
+  const eventCpn = this.selectComponent('#event-cpn')
+  eventCpn.increment()
+}
+```
+
+:::
+
+### 插槽
+
+**单个插槽的使用**
+
+```html
+<view class="slot-cpn">
+  <view class="header">我是头部</view>
+  <slot></slot>
+  <view class="footer">我是尾部</view>
+</view>
+```
+
+```html
+<slot-cpn>
+  <text>我是一段文字，哈哈哈</text>
+</slot-cpn>
+```
+
+**多个插槽的使用**
+
+```html
+<view class="mslot-cpn">
+  <view class="left item"><slot name="left"></slot></view>
+  <view class="center item"><slot name="center"></slot></view>
+  <view class="right item"><slot name="right"></slot></view>
+</view>
+```
+
+```js
+Component({
+  options: {
+    multipleSlots: true,
+  },
+});
+```
+
+```html
+<mslot-cpn>
+  <text slot="left">哈哈</text>
+  <text slot="right">呵呵</text>
+  <text slot="center">嘿嘿</text>
+</mslot-cpn>
+```
+
 ## 系统API
 
 ### 网络请求
