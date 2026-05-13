@@ -1184,6 +1184,105 @@ Component({
 </mslot-cpn>
 ```
 
+### Component构造器
+
+使用 `Component` 构造器来创建自定义组件。
+
+**基本结构**：
+
+```js
+Component({
+  // 组件的属性列表（外部传入的数据）
+  properties: {
+    myProperty: {
+      type: String,
+      value: "",
+    },
+    myProperty2: String, // 简写方式
+  },
+  // 组件的内部数据（组件自身的数据）
+  data: {
+    internalData: "Hello",
+  },
+  // 组件的方法列表
+  methods: {
+    onTap: function () {},
+  },
+  // 组件的配置项
+  options: {
+    multipleSlots: true,
+    styleIsolation: "shared",
+  },
+  // 组件的属性监听器
+  observers: {
+    myProperty(newVal, oldVal) {
+      console.log(newVal, oldVal);
+    },
+  },
+  // 组件的外部样式类
+  externalClasses: ["titleClass", "contentClass"],
+  // 组件的生命周期函数
+  lifetimes: {
+    created: function () {
+      console.log("组件实例被创建");
+    },
+    attached: function () {
+      console.log("组件进入页面节点树");
+    },
+    ready: function () {
+      console.log("组件布局完成");
+    },
+    moved: function () {
+      console.log("组件被移动");
+    },
+    detached: function () {
+      console.log("组件离开页面节点树");
+    },
+  },
+  // 组件所在页面的生命周期函数
+  pageLifetimes: {
+    show: function () {
+      console.log("页面显示");
+    },
+    hide: function () {
+      console.log("页面隐藏");
+    },
+    resize: function (size) {
+      console.log("页面尺寸变化");
+    },
+  },
+});
+```
+
+**组件配置项（options）**：
+
+| 属性              | 类型    | 默认值   | 说明                                                                                                    |
+| ----------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `multipleSlots`   | Boolean | false    | 启用多slot支持                                                                                          |
+| `addGlobalClass`  | Boolean | false    | 引用组件时，外部样式类会影响组件内部                                                                    |
+| `virtualHost`     | Boolean | false    | 将组件节点视为虚拟节点                                                                                  |
+| `styleIsolation`  | String  | isolated | 样式隔离选项：<br>`isolated` - 完全隔离<br>`apply-shared` - 父组件样式影响子组件<br>`shared` - 相互影响 |
+| `pureDataPattern` | String  | -        | 指定一个正则表达式，匹配符合规则的 data 字段为纯数据字段（不参与视图渲染）                              |
+| `slot`            | String  | -        | 配置 slot 的渲染方式，可选 `slot` 或 `element`                                                          |
+
+**组件的使用**：
+
+在页面的 `.json` 文件中声明组件：
+
+```json
+{
+  "usingComponents": {
+    "my-component": "/components/my-component/my-component"
+  }
+}
+```
+
+在页面的 `.wxml` 文件中使用组件：
+
+```html
+<my-component my-property="Hello" bind:myevent="handleEvent"></my-component>
+```
+
 ## 系统API
 
 ### 网络请求
