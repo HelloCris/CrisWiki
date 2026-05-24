@@ -142,15 +142,60 @@ v-on指令 缩写@
 
 :::
 
-::: info v-if 条件判断
-
-:::
-
 ::: info v-for 循环遍历
+
+`v-for` 支持遍历数组、对象、字符串，甚至可以直接遍历指定的次数。基本语法是 `v-for="(item, index) in items"`。
+
+**1. 遍历数组（最常用）**
+可以获取数组的每一项以及对应的索引（索引从 0 开始）。
+
+```html
+<ul>
+  <!-- item 是数组项，index 是索引（可选） -->
+  <li v-for="(item, index) in items" :key="item.id">
+    {{ index }} - {{ item.message }}
+  </li>
+</ul>
+```
+
+**2. 遍历对象**
+可以获取对象的属性值（value）、属性名（key）以及索引（index）。
+
+```html
+<ul>
+  <!-- 参数顺序固定：值, 键, 索引 -->
+  <li v-for="(value, key, index) in user" :key="key">
+    {{ index }}. {{ key }}: {{ value }}
+  </li>
+</ul>
+```
+
+**3. 遍历整数或字符串**
+
+- 遍历整数：`v-for` 接受一个整数，会将模板重复对应的次数（从 1 开始）。
+- 遍历字符串：会将字符串拆分为字符数组进行遍历（较少使用）。
+
+```html
+<!-- 遍历整数，输出 1 到 10 -->
+<span v-for="n in 10">{{ n }} </span>
+<!-- 遍历字符串 -->
+<span v-for="(char, index) in 'hello'">{{ char }}-{{ index }}</span>
+```
 
 :::
 
 ::: info v-model 双向数据绑定
+
+`v-model` 本质上是一个**语法糖**。在底层，它结合了 `v-bind`（绑定数据）和 `v-on`（监听事件）来实现双向绑定。
+
+以最常见的文本输入框为例，以下两行代码是完全等价的：
+
+```html
+<!-- 使用 v-model 的简写 -->
+<input v-model="message" />
+<!-- 编译后的等价写法 -->
+<input :value="message" @input="message = $event.target.value" />
+```
 
 :::
 
@@ -197,6 +242,14 @@ v-on指令 缩写@
 |            `.meta`             | Mac 的 Cmd / Windows 的 Win 键 |
 
 ## 组件化开发
+
+### 组件的注册
+
+### 组件数据data
+
+### 组件通信
+
+### 插槽slot
 
 ## 模块化开发
 
