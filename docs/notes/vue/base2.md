@@ -245,6 +245,166 @@ v-on指令 缩写@
 
 ### 组件的注册
 
+组件的使用通常分为三个标准步骤：**创建组件构造器**、**注册组件**、**使用组件**。
+
+1. **创建组件构造器**：调用 `Vue.extend()` 方法。
+2. **注册组件**：调用 `Vue.component()` 方法。
+3. **使用组件**：在 Vue 实例的作用范围内（HTML 中）使用组件标签。
+
+::: info 基础注册流程 (Vue.extend)
+
+_注意：这种写法在 Vue 2.x 文档中几乎已淘汰，现在直接使用语法糖，但语法糖的底层原理仍是此方法。_
+
+**代码示例：**
+
+```html
+<div id="app">
+  <!-- 3. 使用组件 -->
+  <my-cpn></my-cpn>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  // 1. 创建组件构造器
+  const myComponent = Vue.extend({
+    template: `
+      <div>
+        <h2>组件标题</h2>
+        <p>我是组件中的一个段落内容</p>
+      </div>`,
+  });
+
+  // 2. 注册组件, 并且定义组件标签的名称
+  Vue.component("my-cpn", myComponent);
+
+  // 创建 Vue 实例
+  let app = new Vue({
+    el: "#app",
+  });
+</script>
+```
+
+**核心概念解析：**
+
+- **Vue.extend()**：
+  - 创建的是一个**组件构造器**。
+  - 通常传入 `template` 属性，代表自定义组件的 HTML 模板。
+- **Vue.component()**：
+  - 将刚才的组件构造器注册为一个组件，并给它起一个标签名称。
+  - **参数 1**：注册组件的标签名（如 `'my-cpn'`）。
+  - **参数 2**：组件构造器（如 `myComponent`）。
+- **挂载要求**：组件必须挂载在某个 Vue 实例下，否则不会生效。
+
+:::
+
+::: info 语法糖注册
+
+为了简化代码，Vue 提供了“语法糖”写法，省略了显式调用 `Vue.extend` 的步骤，直接在注册时传入配置对象。
+
+**全局组件注册 (语法糖)：**
+
+直接在 `Vue.component` 中传入对象。
+
+```js
+// 1. 注册全局组件的语法糖
+Vue.component("my-cpn", {
+  template: `
+    <div>
+      <h2>组件标题</h2>
+      <p>组件正文的内容, 今天真开心啊!!!</p>
+    </div>`,
+});
+```
+
+**局部组件注册 (语法糖)：**
+
+通过 Vue 实例中的 `components` 属性进行挂载。
+
+```js
+let app = new Vue({
+  el: "#app",
+  components: {
+    // 键名是组件名，键值是组件配置对象
+    "my-cpn1": {
+      template: "<div>这是my-cpn1组件</div>",
+    },
+    "my-cpn2": {
+      template: "<div>这是my-cpn2组件</div>",
+    },
+  },
+});
+```
+
+:::
+
+::: info 全局组件与局部组件
+
+| 类型         | 注册方式                                | 作用域                                              |
+| :----------- | :-------------------------------------- | :-------------------------------------------------- |
+| **全局组件** | 调用 `Vue.component()`                  | 可以在**任意** Vue 实例下使用。                     |
+| **局部组件** | 在 Vue 实例中通过 `components` 属性注册 | 只能在当前 Vue 实例的作用范围内（及其子组件）使用。 |
+
+:::
+
+::: info 模板的分离写法
+
+在实际开发中，将 HTML 字符串直接写在 JavaScript 的 `template` 字符串中既不方便也不直观。Vue 提供了两种方案将 HTML 模块内容分离出来：
+
+1. 使用 `<script>` 标签
+2. 使用 `<template>` 标签
+
+**方案一：使用 `<script>` 标签**
+
+利用 `type="text/x-template"` 防止浏览器将其作为 JavaScript 执行。
+
+```html
+<!-- 定义模板 -->
+<script type="text/x-template" id="myCpn">
+  <div>
+    <h2>组件标题</h2>
+    <p>我是组件的内容，今天天气不错哦!!!</p>
+  </div>
+</script>
+
+<script>
+  let app = new Vue({
+    el: "#app",
+    components: {
+      "my-cpn": {
+        template: "#myCpn", // 通过 ID 选择器引用
+      },
+    },
+  });
+</script>
+```
+
+**方案二：使用 `<template>` 标签(推荐)**
+
+```html
+<!-- 定义模板 -->
+<template id="myCpn">
+  <div>
+    <h2>组件标题</h2>
+    <p>我是组件的内容，今天天气不错哦!!!</p>
+  </div>
+</template>
+
+<script>
+  let app = new Vue({
+    el: "#app",
+    components: {
+      "my-cpn": {
+        template: "#myCpn", // 通过 ID 选择器引用
+      },
+    },
+  });
+</script>
+```
+
+> **注意**：无论是哪种分离写法，在组件配置中引用时，都需要使用 `template: '#id名'` 的形式。
+
+:::
+
 ### 组件数据data
 
 ### 组件通信
