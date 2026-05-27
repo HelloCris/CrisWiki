@@ -407,6 +407,8 @@ let app = new Vue({
 
 ### 组件数据data
 
+111
+
 ### 组件通信
 
 ### 插槽slot
