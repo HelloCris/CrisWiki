@@ -405,11 +405,332 @@ let app = new Vue({
 
 :::
 
-### 组件数据data
+::: info 组件数据data属性
 
-111
+- 组件对象有一个 `data` 属性，必须是一个**函数**，这个函数必须返回一个**对象**，对象内部保存着数据。
+- **数据隔离（核心原因）**：原因是 Vue 让每个组件对象都返回一个新的对象。因为如果是同一个对象的引用，组件在多次使用后会相互影响（即数据污染）。
+
+```js
+let app = new Vue({
+  el: "#app",
+  components: {
+    "my-cpn": {
+      template: "#myCpn",
+      // data 必须是一个函数，且返回一个对象
+      data() {
+        return {
+          message: "Hello World",
+        };
+      },
+    },
+  },
+});
+```
+
+:::
 
 ### 组件通信
+
+Vue2中组件通信主要包括：父子组件通信、子父组件通信、兄弟组件通信、祖先与后代组件通信。
+
+#### 1. 父子组件通信
+
+**父组件向子组件传递数据：使用props**
+
+```vue
+<!-- 父组件 -->
+<template>
+  <child-component
+    :parent-message="message"
+    :parent-num="num"
+  ></child-component>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      message: "Hello",
+      num: 100,
+    };
+  },
+};
+</script>
+
+<!-- 子组件 -->
+<script>
+export default {
+  // 方式一：数组形式
+  // props: ['parentMessage', 'parentNum']
+
+  // 方式二：对象形式（推荐）
+  props: {
+    parentMessage: {
+      type: String,
+      default: "",
+    },
+    parentNum: {
+      type: Number,
+      required: true,
+    },
+  },
+};
+</script>
+```
+
+::: info props属性说明
+
+| 属性        | 类型                                                    | 说明           |
+| ----------- | ------------------------------------------------------- | -------------- |
+| `type`      | String/Number/Boolean/Array/Object/Date/Function/Symbol | 数据类型       |
+| `required`  | Boolean                                                 | 是否必填       |
+| `default`   | String/Number/Boolean/Array/Object/Function             | 默认值         |
+| `validator` | Function                                                | 自定义验证函数 |
+
+:::
+
+**props数据流向：props是只读的，不建议直接修改**
+
+#### 2. 子父组件通信
+
+**子组件向父组件传递数据：使用$emit**
+
+```vue
+<!-- 子组件 -->
+<template>
+  <button @click="sendToParent">发送数据</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    sendToParent() {
+      this.$emit("child-event", "来自子组件的数据");
+    },
+  },
+};
+</script>
+
+<!-- 父组件 -->
+<template>
+  <child-component @child-event="handleChildEvent"></child-component>
+</template>
+
+<script>
+export default {
+  methods: {
+    handleChildEvent(data) {
+      console.log(data); // '来自子组件的数据'
+    },
+  },
+};
+</script>
+```
+
+#### 3. v-model实现双向绑定
+
+```vue
+<!-- 父组件 -->
+<template>
+  <child-component v-model="value"></child-component>
+  <!-- 等价于 -->
+  <child-component :value="value" @input="value = $event"></child-component>
+</template>
+
+<script>
+export default {
+  data() {
+    return { value: "" };
+  },
+};
+</script>
+
+<!-- 子组件 -->
+<template>
+  <input :value="value" @input="$emit('input', $event.target.value)" />
+</template>
+
+<script>
+export default {
+  props: ["value"],
+};
+</script>
+```
+
+#### 4. 兄弟组件通信
+
+**方式一：父组件作为中转**
+
+```vue
+<!-- 父组件 -->
+<template>
+  <child-a @event-a="handleA"></child-a>
+  <child-b :message="message"></child-b>
+</template>
+
+<script>
+export default {
+  data() {
+    return { message: "" };
+  },
+  methods: {
+    handleA(data) {
+      this.message = data;
+    },
+  },
+};
+</script>
+```
+
+**方式二：事件总线（Event Bus）**
+
+```javascript
+// 创建事件总线
+export default new Vue();
+
+// main.js中挂载到Vue原型
+Vue.prototype.$bus = new Vue();
+```
+
+```vue
+<!-- 组件A -->
+<script>
+export default {
+  mounted() {
+    this.$bus.$emit("bus-event", "来自A的数据");
+  },
+};
+</script>
+
+<!-- 组件B -->
+<script>
+export default {
+  mounted() {
+    this.$bus.$on("bus-event", (data) => {
+      console.log(data);
+    });
+  },
+  beforeDestroy() {
+    this.$bus.$off("bus-event");
+  },
+};
+</script>
+```
+
+#### 5. 祖先与后代组件通信
+
+**provide / inject**
+
+```vue
+<!-- 祖先组件 -->
+<script>
+export default {
+  provide() {
+    return {
+      theme: this.themeColor,
+      method: this.commonMethod,
+    };
+  },
+  data() {
+    return {
+      themeColor: "blue",
+    };
+  },
+  methods: {
+    commonMethod() {
+      console.log("共享方法");
+    },
+  },
+};
+</script>
+
+<!-- 后代组件 -->
+<script>
+export default {
+  inject: ["theme", "method"],
+  mounted() {
+    console.log(this.theme); // 'blue'
+    this.method();
+  },
+};
+</script>
+```
+
+::: info provide / inject 特点
+
+- `provide`：祖先组件提供数据，可以是对象或返回对象的函数（本身不是响应式的）
+- `inject`：后代组件注入数据，默认值非响应式
+- **响应式说明**：如果provide的是`data()`返回的响应式对象（引用），则inject是响应式的；如果provide的是普通值/对象，则不是响应式的
+- 适用场景：父组件向深层嵌套的子组件传值
+
+:::
+
+#### 6. $attrs 和 $listeners
+
+**$attrs**：包含了父作用域中不作为prop被识别（且获取）的特性绑定
+
+**$listeners**：包含了父作用域中的v-on事件监听器
+
+```vue
+<!-- 父组件 -->
+<template>
+  <child-component :foo="foo" :bar="bar" @click="handleClick"></child-component>
+</template>
+
+<!-- 子组件 -->
+<script>
+export default {
+  mounted() {
+    // 获取所有非props属性
+    console.log(this.$attrs); // { bar: 'barValue' }
+    // 获取所有事件监听器
+    console.log(this.$listeners); // { click: f }
+  },
+};
+</script>
+```
+
+#### 7. $parent / $children / $refs
+
+```vue
+<!-- 父组件 -->
+<script>
+export default {
+  mounted() {
+    // 访问子组件实例
+    console.log(this.$children[0].childMethod());
+    // 通过ref访问
+    console.log(this.$refs.childRef.childMethod());
+  },
+};
+</script>
+
+<!-- 子组件 -->
+<script>
+export default {
+  methods: {
+    childMethod() {
+      return "子组件方法";
+    },
+  },
+};
+</script>
+```
+
+::: info 组件通信方式对比
+
+| 方式              | 适用场景      | 特点                      |
+| ----------------- | ------------- | ------------------------- |
+| props/$emit       | 父子组件      | 最常用，简单直接          |
+| v-model           | 双向绑定      | 语法糖，本质是props+$emit |
+| .sync             | 双向绑定      | 语法糖，多个prop双向绑定  |
+| Event Bus         | 兄弟/任意组件 | 简单，但组件多时难以维护  |
+| provide/inject    | 祖先与后代    | 适合深层嵌套组件通信      |
+| $attrs/$listeners | 层级组件      | 批量传递属性和事件        |
+| $parent/$children | 父子组件      | 紧耦合，不推荐            |
+| Vuex              | 全局状态      | 状态管理，适合大型应用    |
+
+:::
 
 ### 插槽slot
 
